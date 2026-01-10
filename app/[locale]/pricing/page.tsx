@@ -9,6 +9,11 @@ interface PricingPageProps {
   params: Promise<{ locale: string }>;
 }
 
+/**
+ * 生成定价页面的 SEO Metadata
+ * 
+ * @see https://nextjs.org/docs/app/api-reference/functions/generate-metadata
+ */
 export async function generateMetadata({ params }: PricingPageProps): Promise<Metadata> {
   const { locale } = await params;
   const basePath = `/${locale}/pricing`;

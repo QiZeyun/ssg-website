@@ -8,6 +8,11 @@ interface ContactPageProps {
   params: Promise<{ locale: string }>;
 }
 
+/**
+ * 生成联系页面的 SEO Metadata
+ * 
+ * @see https://nextjs.org/docs/app/api-reference/functions/generate-metadata
+ */
 export async function generateMetadata({ params }: ContactPageProps): Promise<Metadata> {
   const { locale } = await params;
   return generateMetadataFromPath(`/${locale}/contact`);

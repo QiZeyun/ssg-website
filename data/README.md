@@ -82,14 +82,24 @@ case 'cms':
 ### 在页面中获取 SEO 配置
 
 ```typescript
+import type { Metadata } from 'next';
 import { generateMetadataFromPath } from '@/configSource/seo';
 
+/**
+ * ⚠️ 重要：这是 Next.js App Router 的特殊导出函数，用于生成页面的 <head> 标签内容。
+ * 此方法会在构建时被 Next.js 自动调用，生成页面的 SEO 元数据。
+ * 删除此方法会导致页面缺少 SEO 元数据，影响搜索引擎排名和社交媒体分享效果。
+ */
 export async function generateMetadata(): Promise<Metadata> {
   return generateMetadataFromPath('/about');
 }
 ```
 
-注意：`generateMetadataFromPath` 仍在 `configSource/seo` 模块中，因为它是对配置数据获取和 Metadata 生成的封装。
+**重要说明**：
+- `generateMetadata` 是 Next.js App Router 的特殊约定函数名，不能随意修改或删除
+- 此函数会在构建时被 Next.js 自动调用，将返回的 `Metadata` 对象转换为 HTML 的 `<head>` 标签
+- 删除此函数会导致页面缺少 SEO 元数据（title、description、Open Graph、Twitter Card 等）
+- `generateMetadataFromPath` 函数在 `configSource/seo` 模块中，它是对配置数据获取和 Metadata 生成的封装
 
 ### 获取全局配置
 

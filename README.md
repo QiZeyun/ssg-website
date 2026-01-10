@@ -162,6 +162,123 @@ export async function generateMetadata(): Promise<Metadata> {
 
 详细说明请参考 [data/README.md](data/README.md)
 
+### 页面 SEO Metadata 生成
+
+#### generateMetadata 函数
+
+在 Next.js App Router 中，每个页面组件都可以导出一个特殊的 `generateMetadata` 函数来生成页面的 SEO 元数据。
+
+**⚠️ 重要说明**：
+
+1. **这是 Next.js 的特殊导出函数**：`generateMetadata` 是 Next.js App Router 的内置约定函数名，用于生成页面的 `<head>` 标签内容。
+
+2. **构建时自动调用**：Next.js 会在构建时自动调用此函数，将返回的 `Metadata` 对象转换为 HTML 的 `<head>` 标签。
+
+3. **不能删除**：删除此函数会导致页面缺少 SEO 元数据（title、description、Open Graph 等），严重影响搜索引擎排名和社交媒体分享效果。
+
+4. **与页面组件的关系**：
+   - `generateMetadata`：生成页面的 `<head>` 内容（SEO 元数据）
+   - 页面组件（如 `AboutPage`）：生成页面的 `<body>` 内容（实际内容）
+
+**使用示例**：
+
+```typescript
+// app/[locale]/about/page.tsx
+import type { Metadata } from 'next';
+import { generateMetadataFromPath } from '@/configSource/seo';
+
+interface AboutPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+/**
+ * 生成关于页面的 SEO Metadata
+ * 
+ * ⚠️ 重要：这是 Next.js App Router 的特殊导出函数，用于生成页面的 <head> 标签内容。
+ * 删除此方法会导致页面缺少 SEO 元数据，影响搜索引擎排名和社交媒体分享效果。
+ */
+export async function generateMetadata({ params }: AboutPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return generateMetadataFromPath(`/${locale}/about`);
+}
+
+export default async function AboutPage({ params }: AboutPageProps) {
+  // 页面内容...
+}
+```
+
+**生成的 HTML 效果**：
+
+```html
+<head>
+  <title>About Us | Your Company Name</title>
+  <meta name="description" content="Learn more about our company...">
+  <meta property="og:title" content="About Us | Your Company Name">
+  <meta property="og:description" content="Learn more about our company...">
+  <meta property="og:image" content="https://example.com/og-about.jpg">
+  <!-- 更多 SEO 标签... -->
+</head>
+```
+
+**布局级别的 Metadata**：
+
+在 `layout.tsx` 中也可以使用 `generateMetadata` 来设置全局默认 SEO 配置，这些配置会被页面级别的配置覆盖：
+
+```typescript
+// app/[locale]/layout.tsx
+export async function generateMetadata({ params }: LocaleLayoutProps): Promise<Metadata> {
+  // 全局 SEO 配置，所有子页面都会继承
+  return {
+    metadataBase: new URL('https://example.com'),
+    title: {
+      default: 'Site Name',
+      template: '%s | Site Name',
+    },
+    description: 'Default description',
+  };
+}
+```
+
+**相关文档**：
+- [Next.js Metadata API 文档](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
+- [SEO 配置说明](data/README.md)
+
+### ESLint 规则：强制要求 generateMetadata
+
+项目配置了自定义 ESLint 规则 `local-rules/require-generate-metadata`，强制要求所有 `app/**/page.tsx` 文件必须导出 `generateMetadata` 函数。
+
+**规则说明**：
+- **适用范围**：仅检查 `app/**/page.tsx` 文件
+- **错误级别**：`error`（提交前必须修复）
+- **检查逻辑**：检查文件是否有默认导出（确保是页面组件）且是否导出了 `generateMetadata` 函数
+
+**为什么需要这个规则**：
+- `generateMetadata` 是 Next.js App Router 的特殊导出函数，用于生成页面的 SEO 元数据
+- 缺少此函数会导致页面缺少 SEO 元数据，影响搜索引擎排名和社交媒体分享效果
+- 通过 ESLint 规则可以在开发阶段就发现问题，避免遗漏
+
+**错误示例**：
+```typescript
+// ❌ 缺少 generateMetadata，会触发 ESLint 错误
+export default async function AboutPage() {
+  return <div>About Page</div>;
+}
+```
+
+**正确示例**：
+```typescript
+// ✅ 包含 generateMetadata，通过 ESLint 检查
+export async function generateMetadata({ params }: AboutPageProps): Promise<Metadata> {
+  return generateMetadataFromPath(`/${params.locale}/about`);
+}
+
+export default async function AboutPage() {
+  return <div>About Page</div>;
+}
+```
+
+**规则文件位置**：`eslint-local-rules/require-generate-metadata.js`
+
 ## 🧪 本地验证
 
 ### 验证构建产物
@@ -275,6 +392,19 @@ vercel --prod
 
 样式使用 Tailwind CSS，配置文件为 `tailwind.config.js`。
 
+### ESLint 配置
+
+项目使用 ESLint 进行代码质量检查，配置文件为 `.eslintrc.json`。
+
+**自定义规则**：
+- `local-rules/require-generate-metadata`：强制要求 `app/**/page.tsx` 文件必须导出 `generateMetadata` 函数
+- 规则定义位置：`eslint-local-rules/require-generate-metadata.js`
+- 使用插件：`eslint-plugin-local-rules`
+
+**项目特定规则**：
+- 禁止硬编码文案：禁止使用 `locale === 'zh'` 或 `locale === 'en'` 的方式硬编码文案
+- 必须使用翻译函数：`t(locale, 'translation.key')` 或 `useTranslation(locale) Hook`
+
 ## 📚 相关文档
 
 - [工程亮点与知识点总结](PROJECT_HIGHLIGHTS.md) - **📖 推荐阅读**：工程亮点、SSG/官网知识点、技术要点和扩展学习
@@ -325,7 +455,8 @@ pnpm build
 ### 页面内容不正确
 
 - 检查 `data/seo-config.json` 配置是否正确
-- 确认页面组件正确使用 `generateMetadata`
+- 确认页面组件正确使用 `generateMetadata`（⚠️ 不能删除此函数）
 - 验证环境变量是否正确设置
+- 检查生成的 HTML 中是否包含正确的 SEO 元数据（使用浏览器开发者工具查看）
 
 更多故障排查信息请参考 [DEPLOY.md](DEPLOY.md) 和 [VALIDATE.md](VALIDATE.md)

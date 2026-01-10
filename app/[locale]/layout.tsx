@@ -20,6 +20,11 @@ export function generateStaticParams() {
   ];
 }
 
+/**
+ * 生成布局级别的全局 SEO Metadata
+ * 
+ * @see https://nextjs.org/docs/app/api-reference/functions/generate-metadata
+ */
 export async function generateMetadata({ params }: LocaleLayoutProps): Promise<Metadata> {
   const { locale } = await params;
   

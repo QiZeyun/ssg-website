@@ -440,11 +440,20 @@ export function ContactForm() {
 
 ```typescript
 // 页面级别的 Metadata
+/**
+ * ⚠️ 重要：这是 Next.js App Router 的特殊导出函数，用于生成页面的 <head> 标签内容。
+ * 删除此方法会导致页面缺少 SEO 元数据，影响搜索引擎排名和社交媒体分享效果。
+ */
 export async function generateMetadata(): Promise<Metadata> {
   return generateMetadataFromPath('/about');
 }
 
 // 全局 Metadata（在 layout.tsx 中）
+/**
+ * ⚠️ 重要：布局级别的 generateMetadata 设置全局默认 SEO 配置，
+ * 所有子页面都会继承这些配置，页面级别的配置会覆盖布局级别的配置。
+ * 删除此方法会导致所有页面缺少全局 SEO 元数据。
+ */
 export async function generateMetadata(): Promise<Metadata> {
   const globalConfig = await getGlobalConfig();
   return {
@@ -456,6 +465,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 ```
+
+**重要提示**：
+- `generateMetadata` 是 Next.js App Router 的特殊约定函数名，会在构建时自动调用
+- 此函数用于生成页面的 SEO 元数据（title、description、Open Graph、Twitter Card 等）
+- 删除此函数会导致页面缺少 SEO 元数据，严重影响搜索引擎排名和社交媒体分享效果
+- 所有页面都应该包含此函数，即使使用默认配置也应保留
 
 #### 4. 静态导出配置
 

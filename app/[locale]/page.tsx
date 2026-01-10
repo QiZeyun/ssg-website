@@ -8,6 +8,11 @@ interface HomePageProps {
   params: Promise<{ locale: string }>;
 }
 
+/**
+ * 生成首页的 SEO Metadata
+ * 
+ * @see https://nextjs.org/docs/app/api-reference/functions/generate-metadata
+ */
 export async function generateMetadata({ params }: HomePageProps): Promise<Metadata> {
   const { locale } = await params;
   return generateMetadataFromPath(`/${locale}`);

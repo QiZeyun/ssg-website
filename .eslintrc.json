@@ -1,5 +1,6 @@
 {
   "extends": "next/core-web-vitals",
+  "plugins": ["local-rules"],
   "rules": {
     "no-restricted-syntax": [
       "error",
@@ -35,7 +36,14 @@
             "selector": "JSXExpressionContainer > ConditionalExpression[test.type='BinaryExpression'][test.operator='==='][test.right.name='locale'][test.left.value=/^(zh|en)$/]",
             "message": "禁止在 JSX 中使用 locale === 'zh' 或 locale === 'en' 硬编码文案。请使用翻译函数 t(locale, 'key') 或 useTranslation(locale) Hook。"
           }
-        ]
+        ],
+        "local-rules/require-generate-metadata": "error"
+      }
+    },
+    {
+      "files": ["app/**/page.tsx"],
+      "rules": {
+        "local-rules/require-generate-metadata": "error"
       }
     }
   ]
