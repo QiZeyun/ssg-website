@@ -277,10 +277,12 @@ vercel --prod
 
 ## 📚 相关文档
 
+- [工程亮点与知识点总结](PROJECT_HIGHLIGHTS.md) - **📖 推荐阅读**：工程亮点、SSG/官网知识点、技术要点和扩展学习
 - [部署指南](DEPLOY.md) - 详细的部署说明和故障排查
 - [验证指南](VALIDATE.md) - 本地验证构建产物的完整指南
 - [SEO 配置说明](data/README.md) - SEO 配置系统的详细文档
 - [GitHub Actions 工作流](.github/workflows/README.md) - CI/CD 工作流说明
+- [Webpack 错误解释](WEBPACK_ERROR_EXPLANATION.md) - Webpack 相关技术问题详细解释
 
 ## 🤝 贡献
 
