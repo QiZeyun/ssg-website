@@ -34,7 +34,7 @@ export function Navigation({ locale, currentPath }: NavigationProps) {
             Your Company
           </Link>
           
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-4 md:space-x-6">
             {/* Navigation Links */}
             <div className="hidden md:flex space-x-4">
               <Link
@@ -64,8 +64,7 @@ export function Navigation({ locale, currentPath }: NavigationProps) {
             </div>
 
             {/* Language Switcher */}
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600 hidden sm:inline">{t('common.language')}:</span>
+            <div className="flex items-center border border-gray-200 rounded-lg p-0.5 bg-gray-50 shadow-sm">
               {supportedLocales.map((loc) => {
                 const isActive = loc === locale;
                 const targetPath = `/${loc}${basePath === '/' ? '' : basePath}`;
@@ -74,11 +73,13 @@ export function Navigation({ locale, currentPath }: NavigationProps) {
                   <Link
                     key={loc}
                     href={targetPath}
-                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 min-w-[3rem] text-center ${
                       isActive
-                        ? 'bg-primary-600 text-white'
-                        : 'text-gray-600 hover:text-primary-600 hover:bg-gray-100'
+                        ? 'bg-white text-primary-600 shadow-sm font-semibold'
+                        : 'text-gray-600 hover:text-primary-600 hover:bg-white/50'
                     }`}
+                    aria-label={`Switch to ${localeConfigs[loc].name}`}
+                    aria-current={isActive ? 'page' : undefined}
                   >
                     {localeConfigs[loc].nativeName}
                   </Link>
