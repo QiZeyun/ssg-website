@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { generateMetadataFromPath } from '@/lib/seo';
 import { t, isSupportedLocale } from '@/lib/i18n';
-import { getDefaultPricingDataSource } from '@/lib/pricing/config';
+import { getDefaultPricingDataSource } from '@/lib/configs/pricing';
 import { PricingTable } from '@/components/PricingTable';
 
 interface PricingPageProps {

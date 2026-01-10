@@ -9,7 +9,7 @@
 
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { getSeoConfigPath } from '@/lib/data/config';
+import { getSeoConfigPath } from '../config';
 import type { ISeoDataSource } from './interface';
 import type { SeoConfig, PageSeoConfig, GlobalSeoConfig, SitemapPageConfig, RobotsConfig } from './types';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import type { PricingTier } from '@/lib/pricing/config/types';
+import type { PricingTier } from '@/lib/configs/pricing/types';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n';
 

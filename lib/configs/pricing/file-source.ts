@@ -7,7 +7,7 @@
 
 import { readFileSync, statSync } from 'fs';
 import { join } from 'path';
-import { getPricingConfigPath } from '@/lib/data/config';
+import { getPricingConfigPath } from '../config';
 import type { PricingConfig, LocalizedPricingConfig } from './types';
 import type { IPricingDataSource } from './interface';
 import { defaultLocale } from '@/lib/i18n/config';
