@@ -1,5 +1,6 @@
 {
   "buildCommand": "NODE_ENV=production pnpm build",
   "outputDirectory": "out",
-  "framework": null
+  "framework": null,
+  "functions": {}
 }
