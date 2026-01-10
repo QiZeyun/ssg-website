@@ -17,19 +17,22 @@
 ### 1. 架构设计亮点
 
 #### ✅ 可扩展的 SEO 配置系统
-- **抽象数据源接口**：使用 `ISeoDataSource` 接口，支持多种数据源
-- **当前实现**：本地 JSON 文件（`FileSeoDataSource`）
-- **未来扩展**：可轻松接入 CMS、API、数据库等数据源
-- **设计模式**：工厂模式（`createSeoDataSource`）+ 策略模式（不同的数据源实现）
+- **函数式接口**：所有配置获取都是纯函数，直接调用
+- **当前实现**：直接 import JSON 文件，构建时处理
+- **未来扩展**：可以在内部实现中切换数据源（CMS、API 等），调用方无需感知
 
 ```typescript
-// 抽象接口，未来可扩展
-interface ISeoDataSource {
-  getGlobalConfig(): Promise<GlobalSeoConfig>;
-  getPageConfig(path: string): Promise<PageSeoConfig | null>;
-  getSitemapConfig(): Promise<SitemapConfig>;
-  getRobotsConfig(): Promise<RobotsConfig>;
-}
+// 函数式接口，直接调用
+import { 
+  getGlobalConfig, 
+  getPageConfig, 
+  getSitemapConfig, 
+  getRobotsConfig 
+} from '@/configSource/configs/seo';
+
+// 使用示例
+const globalConfig = await getGlobalConfig();
+const pageConfig = await getPageConfig('/about');
 ```
 
 #### ✅ 类型安全的配置系统
@@ -628,29 +631,23 @@ export default async function robots() {
 **本工程的可扩展 SEO 配置系统**：
 
 ```typescript
-// 抽象接口
-interface ISeoDataSource {
-  getGlobalConfig(): Promise<GlobalSeoConfig>;
-  getPageConfig(path: string): Promise<PageSeoConfig | null>;
-  getSitemapConfig(): Promise<SitemapConfig>;
-  getRobotsConfig(): Promise<RobotsConfig>;
-}
+// 函数式接口，直接调用
+import { 
+  getGlobalConfig, 
+  getPageConfig, 
+  getSitemapConfig, 
+  getRobotsConfig 
+} from '@/configSource/configs/seo';
 
-// 当前实现：文件数据源
-class FileSeoDataSource implements ISeoDataSource {
-  // 从本地 JSON 文件读取配置
-}
-
-// 未来可扩展：CMS 数据源
-class CmsSeoDataSource implements ISeoDataSource {
-  // 从 CMS（如 Contentful、Strapi）读取配置
-}
-
-// 未来可扩展：API 数据源
-class ApiSeoDataSource implements ISeoDataSource {
-  // 从 API 读取配置
-}
+// 使用示例
+const globalConfig = await getGlobalConfig();
+const pageConfig = await getPageConfig('/about');
+const sitemapConfig = await getSitemapConfig();
+const robotsConfig = await getRobotsConfig();
 ```
+
+**当前实现**：直接 import JSON 文件，由构建工具在构建时处理
+**未来可扩展**：可以在内部实现中切换数据源（CMS、API 等），调用方无需感知
 
 ---
 
