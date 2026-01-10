@@ -1,89 +1,86 @@
 /**
- * SEO 配置数据源模块
+ * SEO 配置数据源
  * 
- * 提供统一的接口来获取 SEO 配置，支持多种数据源
+ * 从本地 JSON 文件获取 SEO 配置
+ * 对外暴露的函数均为异步（保持接口一致性）
  */
 
-import type { ISeoDataSource } from './interface';
-import { FileSeoDataSource } from './file-source';
+import seoConfigData from '@/data/seo-config.json';
 import type { SeoConfig, PageSeoConfig, GlobalSeoConfig, SitemapPageConfig, RobotsConfig } from './types';
 
 /**
- * 数据源类型
+ * 加载并处理 SEO 配置
+ * 支持环境变量覆盖
  */
-export type DataSourceType = 'file' | 'cms' | 'api' | 'database';
-
-/**
- * 数据源工厂
- * 
- * 根据环境变量或配置创建相应的数据源实例
- * 可以通过 NEXT_PUBLIC_SEO_DATA_SOURCE 环境变量指定数据源类型
- * 
- * @param options 配置选项
- * @returns ISeoDataSource 数据源实例
- */
-export function createSeoDataSource(
-  options?: {
-    type?: DataSourceType;
-    configPath?: string;
-    [key: string]: unknown;
+function loadConfig(): SeoConfig {
+  // 直接使用 import 的 JSON 数据
+  const config = seoConfigData as SeoConfig;
+  
+  // 环境变量覆盖 siteUrl（如果存在）
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    config.global.siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   }
-): ISeoDataSource {
-  // 从环境变量获取数据源类型，默认使用 file
-  const sourceType = options?.type || 
-    (process.env.NEXT_PUBLIC_SEO_DATA_SOURCE as DataSourceType | undefined) || 
-    'file';
-
-  switch (sourceType) {
-    case 'file':
-      // 只传递 configPath（如果提供），路径的默认值由 FileSeoDataSource 内部处理
-      // 调用方不需要感知数据的具体存储路径和格式
-      return new FileSeoDataSource(options?.configPath as string | undefined);
-    
-    case 'cms':
-      // TODO: 实现 CMS 数据源
-      // return new CmsSeoDataSource(options);
-      throw new Error('CMS 数据源尚未实现，请使用 file 数据源');
-    
-    case 'api':
-      // TODO: 实现 API 数据源
-      // return new ApiSeoDataSource(options);
-      throw new Error('API 数据源尚未实现，请使用 file 数据源');
-    
-    case 'database':
-      // TODO: 实现数据库数据源
-      // return new DatabaseSeoDataSource(options);
-      throw new Error('数据库数据源尚未实现，请使用 file 数据源');
-    
-    default:
-      throw new Error(`不支持的数据源类型: ${sourceType}`);
-  }
+  
+  return config;
 }
 
 /**
- * 默认数据源实例（单例模式）
+ * 获取完整的 SEO 配置
+ * @returns Promise<SeoConfig> SEO 配置对象
  */
-let defaultDataSource: ISeoDataSource | null = null;
-
-/**
- * 获取默认数据源实例
- */
-export function getDefaultDataSource(): ISeoDataSource {
-  if (!defaultDataSource) {
-    defaultDataSource = createSeoDataSource();
-  }
-  return defaultDataSource;
+export async function getSeoConfig(): Promise<SeoConfig> {
+  return loadConfig();
 }
 
 /**
- * 设置默认数据源实例
+ * 获取全局 SEO 配置
+ * @returns Promise<GlobalSeoConfig> 全局配置对象
  */
-export function setDefaultDataSource(dataSource: ISeoDataSource): void {
-  defaultDataSource = dataSource;
+export async function getGlobalConfig(): Promise<GlobalSeoConfig> {
+  const config = loadConfig();
+  return config.global;
+}
+
+/**
+ * 根据路径获取页面 SEO 配置
+ * @param path 页面路径，例如 '/' 或 '/about'
+ * @returns Promise<PageSeoConfig | null> 页面配置，如果不存在则返回 null
+ */
+export async function getPageConfig(path: string): Promise<PageSeoConfig | null> {
+  const config = loadConfig();
+  // 规范化路径：确保路径以 / 开头，但根路径保持为 '/'
+  const normalizedPath = path === '' ? '/' : (path.startsWith('/') ? path : `/${path}`);
+  
+  const pageConfig = config.pages.find((page) => page.path === normalizedPath);
+  return pageConfig || null;
+}
+
+/**
+ * 获取所有页面 SEO 配置
+ * @returns Promise<PageSeoConfig[]> 所有页面配置列表
+ */
+export async function getAllPageConfigs(): Promise<PageSeoConfig[]> {
+  const config = loadConfig();
+  return config.pages;
+}
+
+/**
+ * 获取 Sitemap 配置
+ * @returns Promise<SitemapPageConfig[]> Sitemap 页面配置列表
+ */
+export async function getSitemapConfig(): Promise<SitemapPageConfig[]> {
+  const config = loadConfig();
+  return config.sitemap.pages;
+}
+
+/**
+ * 获取 Robots.txt 配置
+ * @returns Promise<RobotsConfig> Robots 配置对象
+ */
+export async function getRobotsConfig(): Promise<RobotsConfig> {
+  const config = loadConfig();
+  return config.robots;
 }
 
 // 导出类型
-export type { ISeoDataSource, SeoConfig, PageSeoConfig, GlobalSeoConfig, SitemapPageConfig, RobotsConfig };
-
-// 导出实现
-export { FileSeoDataSource } from './file-source';
+export type { SeoConfig, PageSeoConfig, GlobalSeoConfig, SitemapPageConfig, RobotsConfig } from './types';

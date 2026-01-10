@@ -4,7 +4,7 @@
  */
 
 import type { Metadata } from 'next';
-import { getDefaultDataSource } from '../configs/seo';
+import { getGlobalConfig, getPageConfig } from '../configs/seo';
 import type { PageSeoConfig, GlobalSeoConfig } from '../configs/seo/types';
 
 /**
@@ -18,13 +18,12 @@ export async function generateMetadataFromPath(
   path: string,
   overrides?: Partial<PageSeoConfig>
 ): Promise<Metadata> {
-  const dataSource = getDefaultDataSource();
-  const globalConfig = await dataSource.getGlobalConfig();
+  const globalConfig = await getGlobalConfig();
   
   // 从多语言路径中提取基础路径（移除语言前缀）
   // 例如：'/zh/about' -> '/about'，'/en/pricing' -> '/pricing'
   const basePath = path.replace(/^\/(zh|en)/, '') || '/';
-  const pageConfig = await dataSource.getPageConfig(basePath);
+  const pageConfig = await getPageConfig(basePath);
 
   // 合并全局配置和页面配置
   const finalConfig: PageSeoConfig = {
@@ -231,8 +230,7 @@ export function generateBreadcrumbStructuredData(
  * @returns Promise<GlobalSeoConfig> 全局配置对象
  */
 export async function getGlobalSeoConfig(): Promise<GlobalSeoConfig> {
-  const dataSource = getDefaultDataSource();
-  return dataSource.getGlobalConfig();
+  return getGlobalConfig();
 }
 
 /**
@@ -242,6 +240,5 @@ export async function getGlobalSeoConfig(): Promise<GlobalSeoConfig> {
  * @returns Promise<PageSeoConfig | null> 页面配置，如果不存在则返回 null
  */
 export async function getPageSeoConfig(path: string): Promise<PageSeoConfig | null> {
-  const dataSource = getDefaultDataSource();
-  return dataSource.getPageConfig(path);
+  return getPageConfig(path);
 }

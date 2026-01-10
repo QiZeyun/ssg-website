@@ -2,30 +2,23 @@
 
 ## 概述
 
-`lib/configs/` 模块提供了统一的抽象接口，用于从外部系统（如 CMS、API、文件系统等）获取配置信息。
+`configSource/configs/` 模块提供了统一的函数式接口，用于获取配置信息。
 
 此模块的核心设计原则是：
-- **抽象性**：调用方不需要感知数据的具体来源（文件、CMS、API、数据库等）
-- **可扩展性**：易于添加新的数据源类型（如 CMS、API、数据库等）
-- **封装性**：所有实现细节都被封装在数据源类中
+- **抽象性**：调用方不需要感知数据的具体来源（JSON 文件、未来可能的 CMS、API 等）
+- **函数式**：所有接口都是纯函数，直接调用，无需创建实例
+- **封装性**：所有实现细节都被封装在模块内部
 
 ## 目录结构
 
 ```
 configSource/configs/
-├── config.ts           # 配置路径管理（数据源路径配置）
 ├── index.ts            # 统一导出
-├── sources/            # 通用数据源实现
-│   ├── base-file-source.ts  # 通用文件数据源基类（减少重复代码）
-│   └── README.md       # 基类使用文档
 ├── seo/                # SEO 配置数据源
-│   ├── index.ts        # 工厂函数和默认实例
-│   ├── interface.ts    # 数据源接口定义
-│   ├── types.ts        # 类型定义
-│   └── file-source.ts  # 文件数据源实现（继承 BaseFileDataSource）
+│   ├── index.ts        # 函数式实现（直接 import JSON）
+│   └── types.ts        # 类型定义
 └── pricing/            # 价格配置数据源
-    ├── index.ts        # 数据源实现和导出（逻辑直接在此文件，异步实现）
-    ├── interface.ts    # 数据源接口定义
+    ├── index.ts        # 函数式实现（直接 import JSON）
     └── types.ts        # 类型定义
 ```
 
@@ -34,137 +27,101 @@ configSource/configs/
 ### SEO 配置数据源
 
 ```typescript
-import { getDefaultDataSource, createSeoDataSource } from '@/configSource/configs/seo';
+import { getGlobalConfig, getPageConfig, getSitemapConfig, getRobotsConfig } from '@/configSource/configs/seo';
 
-// 使用默认数据源（根据环境变量自动选择）
-const dataSource = getDefaultDataSource();
-const globalConfig = await dataSource.getGlobalConfig();
-const pageConfig = await dataSource.getPageConfig('/about');
+// 获取全局 SEO 配置
+const globalConfig = await getGlobalConfig();
 
-// 或创建自定义数据源（指定配置文件路径）
-const customDataSource = createSeoDataSource({
-  type: 'file',
-  configPath: '/custom/path/to/config'
-});
+// 根据路径获取页面 SEO 配置
+const pageConfig = await getPageConfig('/about');
+
+// 获取 Sitemap 配置
+const sitemapConfig = await getSitemapConfig();
+
+// 获取 Robots.txt 配置
+const robotsConfig = await getRobotsConfig();
 ```
 
 ### 价格配置数据源
 
 ```typescript
-import { getDefaultPricingDataSource, createPricingDataSource } from '@/configSource/configs/pricing';
+import { getPricingConfig, getAllPricingConfigs, hasLocale, getSupportedLocales } from '@/configSource/configs/pricing';
 
-// 使用默认数据源
-const dataSource = getDefaultPricingDataSource();
-const pricingConfig = await dataSource.getPricingConfig('zh');
+// 获取指定语言的产品价格配置
+const config = await getPricingConfig('zh');
 
-// 或创建自定义数据源（指定配置文件路径）
-const customDataSource = createPricingDataSource('/custom/path/to/config');
+// 获取所有语言的产品价格配置
+const allConfigs = await getAllPricingConfigs();
+
+// 检查指定语言是否存在
+const exists = await hasLocale('zh');
+
+// 获取支持的语言列表
+const locales = await getSupportedLocales();
 ```
 
 ## 添加新的配置类型
 
-要添加新的配置类型（如 `news`、`products` 等），可以选择两种方式：
+要添加新的配置类型（如 `news`、`products` 等），只需要：
 
-### 方式一：直接实现（推荐，如 pricing 模块）
+1. **定义类型**：创建 `types.ts` 文件定义配置类型
 
-直接在 `index.ts` 中实现异步数据获取逻辑，无需单独的文件：
+```typescript
+// configSource/configs/news/types.ts
+export interface NewsConfig {
+  title: string;
+  articles: Array<{...}>;
+}
+```
+
+2. **实现函数**：在 `index.ts` 中直接 import JSON 并实现函数
 
 ```typescript
 // configSource/configs/news/index.ts
-import { readFile } from 'fs/promises';
-import { join } from 'path';
-import { getConfigPath } from '../config';
-import type { INewsDataSource } from './interface';
+import newsConfigData from '@/data/news-config.json';
 import type { NewsConfig } from './types';
 
-let cachedConfig: NewsConfig | null = null;
-
-async function loadConfig(configPath?: string): Promise<NewsConfig> {
-  if (cachedConfig) return cachedConfig;
+/**
+ * 加载并处理配置
+ */
+function loadConfig(): NewsConfig {
+  const config = newsConfigData as NewsConfig;
   
-  const path = configPath || join(process.cwd(), getConfigPath('news') + '.json');
-  const fileContent = await readFile(path, 'utf-8');
-  const config = JSON.parse(fileContent) as NewsConfig;
+  // 环境变量覆盖（如果需要）
+  // if (process.env.NEXT_PUBLIC_NEWS_OVERRIDE) { ... }
   
-  // 验证逻辑...
-  validateConfig(config);
-  
-  cachedConfig = config;
   return config;
 }
 
-class NewsDataSource implements INewsDataSource {
-  constructor(private configPath?: string) {}
-  
-  async getNewsConfig(): Promise<NewsConfig> {
-    return loadConfig(this.configPath);
-  }
+/**
+ * 获取新闻配置
+ */
+export async function getNewsConfig(): Promise<NewsConfig> {
+  return loadConfig();
 }
 
-export function getDefaultNewsDataSource(): INewsDataSource {
-  return new NewsDataSource();
-}
-
-export function createNewsDataSource(configPath?: string): INewsDataSource {
-  return new NewsDataSource(configPath);
-}
+// 导出类型
+export type { NewsConfig } from './types';
 ```
-
-### 方式二：使用 BaseFileDataSource 基类（如 seo 模块）
-
-如果需要更复杂的缓存和文件修改检查，可以使用 `BaseFileDataSource` 基类：
-
-```typescript
-// configSource/configs/news/file-source.ts
-import { BaseFileDataSource, type FileDataSourceOptions } from '../sources/base-file-source';
-import { getConfigPath } from '../config';
-import type { INewsDataSource } from './interface';
-import type { NewsConfig } from './types';
-
-export class FileNewsDataSource extends BaseFileDataSource<NewsConfig> implements INewsDataSource {
-  constructor(configPath?: string) {
-    super({
-      configPath,
-      getDefaultPath: () => getConfigPath('news'),
-      validateConfig: (config: unknown): void => {
-        // 验证逻辑
-      },
-      useSync: false, // 异步模式
-    });
-  }
-
-  async getNewsConfig(): Promise<NewsConfig> {
-    return this.loadConfig();
-  }
-}
-```
-
-## 注意
-
-- **Pricing 模块**：实现方式为直接在 `index.ts` 中实现异步数据获取逻辑，简洁明了
-- **SEO 模块**：使用 `BaseFileDataSource` 基类，支持更复杂的缓存和文件修改检查
-- **选择建议**：如果只需要简单的异步文件读取，推荐使用 Pricing 模块的方式；如果需要文件修改检查或同步模式，使用 SEO 模块的方式
 
 ## 环境变量
 
 ### SEO 配置
-- `NEXT_PUBLIC_SEO_DATA_SOURCE`: 数据源类型（`file` | `cms` | `api` | `database`），默认 `file`
-- `SEO_CONFIG_PATH` 或 `NEXT_PUBLIC_SEO_CONFIG_PATH`: 数据源路径，默认 `data/seo-config`
+- `NEXT_PUBLIC_SITE_URL`: 覆盖全局 SEO 配置中的 `siteUrl`（如果存在）
 
 ### 价格配置
-- `PRICING_CONFIG_PATH` 或 `NEXT_PUBLIC_PRICING_CONFIG_PATH`: 数据源路径，默认 `data/pricing-config`
+- 暂无环境变量支持（可在 `loadConfig` 函数中添加）
 
-## 设计模式
+## 实现细节
 
-- **工厂模式**：`createSeoDataSource` 和 `createPricingDataSource` 创建数据源实例
-- **单例模式**：`getDefaultDataSource` 和 `getDefaultPricingDataSource` 提供默认单例实例
+- **数据加载**：直接使用 `import` 导入 JSON 文件，由构建工具在构建时处理
+- **环境变量覆盖**：在 `loadConfig` 函数中通过对象合并处理
+- **异步接口**：所有函数都返回 `Promise`，保持接口一致性（虽然实际上是同步的）
+- **类型安全**：使用 TypeScript 类型定义确保配置结构正确
 
 ## 注意事项
 
-1. **不感知实现细节**：调用方不应该直接导入数据源实现类（如 `FileSeoDataSource`），而应该通过接口或工厂函数获取数据源
-
-2. **路径配置**：数据源路径配置通过 `configSource/configs/config.ts` 统一管理，支持环境变量覆盖
-
-3. **两种实现方式**：
-   - **直接实现**（如 pricing）：在 `index.ts` 中直接实现异步逻辑，简洁明了
-   - **使用基类**（如 seo）：使用 `BaseFileDataSource` 基类，支持更复杂的缓存和文件修改检查
+1. **不感知实现细节**：调用方不应该知道数据来自 JSON 文件，只需调用函数即可
+2. **直接 import**：配置数据通过构建时的 `import` 加载，运行时无需文件系统操作
+3. **类型安全**：所有配置都有对应的 TypeScript 类型定义
+4. **扩展性**：如果未来需要从 API 或 CMS 获取配置，只需修改模块内部的实现，调用方代码无需改动

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { generateMetadataFromPath } from '@/configSource/seo';
 import { t, isSupportedLocale } from '@/i18n';
-import { getDefaultPricingDataSource } from '@/configSource/configs/pricing';
+import { getPricingConfig } from '@/configSource/configs/pricing';
 import { PricingTable } from '@/components/PricingTable';
 
 interface PricingPageProps {
@@ -32,8 +32,7 @@ export default async function PricingPage({ params }: PricingPageProps) {
   }
 
   try {
-    const pricingDataSource = getDefaultPricingDataSource();
-    const config = await pricingDataSource.getPricingConfig(locale);
+    const config = await getPricingConfig(locale);
 
     return (
       <main className="min-h-screen bg-gray-50">

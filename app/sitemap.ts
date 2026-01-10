@@ -1,11 +1,10 @@
 import { MetadataRoute } from 'next';
-import { getDefaultDataSource } from '@/configSource/configs/seo';
+import { getGlobalConfig, getSitemapConfig } from '@/configSource/configs/seo';
 import { supportedLocales } from '@/i18n/config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const dataSource = getDefaultDataSource();
-  const globalConfig = await dataSource.getGlobalConfig();
-  const sitemapConfig = await dataSource.getSitemapConfig();
+  const globalConfig = await getGlobalConfig();
+  const sitemapConfig = await getSitemapConfig();
   const baseUrl = globalConfig.siteUrl;
 
   // 为每个语言生成 sitemap URL

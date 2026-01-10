@@ -1,10 +1,9 @@
 import { MetadataRoute } from 'next';
-import { getDefaultDataSource } from '@/configSource/configs/seo';
+import { getGlobalConfig, getRobotsConfig } from '@/configSource/configs/seo';
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
-  const dataSource = getDefaultDataSource();
-  const globalConfig = await dataSource.getGlobalConfig();
-  const robotsConfig = await dataSource.getRobotsConfig();
+  const globalConfig = await getGlobalConfig();
+  const robotsConfig = await getRobotsConfig();
   const baseUrl = globalConfig.siteUrl;
 
   // 处理 sitemap URL（如果配置中使用了相对路径，则补充完整 URL）
