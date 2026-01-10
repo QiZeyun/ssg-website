@@ -95,8 +95,8 @@
 ## 示例
 
 ```typescript
-import { t } from '@/lib/i18n';
-import { useTranslation } from '@/lib/i18n';
+import { t } from '@/i18n';
+import { useTranslation } from '@/i18n';
 
 // 服务器组件中使用
 const text = t(locale, 'nav.home'); // ✅ 类型检查通过

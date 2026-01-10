@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useTranslation, type SupportedLocale, supportedLocales } from '@/lib/i18n';
+import { useTranslation, type SupportedLocale, supportedLocales } from '@/i18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface NavigationProps {

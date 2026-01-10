@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import type { PricingConfig } from '@/lib/configs/pricing/types';
+import type { PricingConfig } from '@/configSource/configs/pricing/types';
 import { PricingCard } from './PricingCard';
-import { useTranslation } from '@/lib/i18n';
+import { useTranslation } from '@/i18n';
 
 interface PricingTableProps {
   config: PricingConfig;

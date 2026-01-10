@@ -1,7 +1,7 @@
 'use client';
 
 import { Navigation } from './Navigation';
-import type { SupportedLocale } from '@/lib/i18n';
+import type { SupportedLocale } from '@/i18n';
 import { usePathname } from 'next/navigation';
 
 interface NavigationWrapperProps {

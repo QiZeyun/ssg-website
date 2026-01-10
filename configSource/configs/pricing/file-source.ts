@@ -10,7 +10,7 @@ import { join } from 'path';
 import { getPricingConfigPath } from '../config';
 import type { PricingConfig, LocalizedPricingConfig } from './types';
 import type { IPricingDataSource } from './interface';
-import { defaultLocale } from '@/lib/i18n/config';
+import { defaultLocale } from '@/i18n/config';
 
 export class FilePricingDataSource implements IPricingDataSource {
   private configPath: string;

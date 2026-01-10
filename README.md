@@ -153,7 +153,7 @@ ssg-website/
 
 ```typescript
 // 在页面中使用
-import { generateMetadataFromPath } from '@/lib/seo';
+import { generateMetadataFromPath } from '@/configSource/seo';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateMetadataFromPath('/about');

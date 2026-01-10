@@ -1,8 +1,8 @@
 'use client';
 
-import type { PricingTier } from '@/lib/configs/pricing/types';
+import type { PricingTier } from '@/configSource/configs/pricing/types';
 import Link from 'next/link';
-import { useTranslation } from '@/lib/i18n';
+import { useTranslation } from '@/i18n';
 
 interface PricingCardProps {
   tier: PricingTier;

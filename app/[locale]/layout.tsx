@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
-import { getGlobalSeoConfig } from '@/lib/seo';
-import { getLocaleConfig, defaultLocale, isSupportedLocale, type SupportedLocale } from '@/lib/i18n';
+import { getGlobalSeoConfig } from '@/configSource/seo';
+import { getLocaleConfig, defaultLocale, isSupportedLocale, type SupportedLocale } from '@/i18n';
 import { NavigationWrapper } from '@/components/NavigationWrapper';
 
 const inter = Inter({ subsets: ['latin'] });

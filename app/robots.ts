@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getDefaultDataSource } from '@/lib/configs/seo';
+import { getDefaultDataSource } from '@/configSource/configs/seo';
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const dataSource = getDefaultDataSource();

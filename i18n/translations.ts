@@ -2,7 +2,7 @@
  * 翻译数据（静态导入，客户端和服务器端都可用）
  */
 
-import { translations } from '@/lib/translations';
+import { translations } from '@/translations';
 import type { TranslationDictionary } from './types';
 import { defaultLocale, supportedLocales } from './config';
 

@@ -32,7 +32,7 @@ lib/configs/
 ### SEO 配置数据源
 
 ```typescript
-import { getDefaultDataSource, createSeoDataSource } from '@/lib/configs/seo';
+import { getDefaultDataSource, createSeoDataSource } from '@/configSource/configs/seo';
 
 // 使用默认数据源（根据环境变量自动选择）
 const dataSource = getDefaultDataSource();
@@ -49,7 +49,7 @@ const customDataSource = createSeoDataSource({
 ### 价格配置数据源
 
 ```typescript
-import { getDefaultPricingDataSource, createPricingDataSource } from '@/lib/configs/pricing';
+import { getDefaultPricingDataSource, createPricingDataSource } from '@/configSource/configs/pricing';
 
 // 使用默认数据源
 const dataSource = getDefaultPricingDataSource();

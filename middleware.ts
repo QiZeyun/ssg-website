@@ -5,7 +5,7 @@
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { defaultLocale, supportedLocales, isSupportedLocale } from '@/lib/i18n/config';
+import { defaultLocale, supportedLocales, isSupportedLocale } from '@/i18n/config';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

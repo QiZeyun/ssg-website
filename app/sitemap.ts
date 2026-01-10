@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
-import { getDefaultDataSource } from '@/lib/configs/seo';
-import { supportedLocales } from '@/lib/i18n/config';
+import { getDefaultDataSource } from '@/configSource/configs/seo';
+import { supportedLocales } from '@/i18n/config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const dataSource = getDefaultDataSource();

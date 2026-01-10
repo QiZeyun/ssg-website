@@ -82,7 +82,7 @@ case 'cms':
 ### 在页面中获取 SEO 配置
 
 ```typescript
-import { generateMetadataFromPath } from '@/lib/seo';
+import { generateMetadataFromPath } from '@/configSource/seo';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateMetadataFromPath('/about');
@@ -92,7 +92,7 @@ export async function generateMetadata(): Promise<Metadata> {
 ### 获取全局配置
 
 ```typescript
-import { getGlobalSeoConfig } from '@/lib/seo';
+import { getGlobalSeoConfig } from '@/configSource/seo';
 
 const globalConfig = await getGlobalSeoConfig();
 console.log(globalConfig.siteName);
@@ -101,7 +101,7 @@ console.log(globalConfig.siteName);
 ### 获取页面配置
 
 ```typescript
-import { getPageSeoConfig } from '@/lib/seo';
+import { getPageSeoConfig } from '@/configSource/seo';
 
 const pageConfig = await getPageSeoConfig('/about');
 if (pageConfig) {

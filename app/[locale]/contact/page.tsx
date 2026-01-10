@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { generateMetadataFromPath } from '@/lib/seo';
-import { t, isSupportedLocale } from '@/lib/i18n';
+import { generateMetadataFromPath } from '@/configSource/seo';
+import { t, isSupportedLocale } from '@/i18n';
 import { ContactForm } from '@/components/ContactForm';
 
 interface ContactPageProps {

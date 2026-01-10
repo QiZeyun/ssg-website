@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { useTranslation } from '@/lib/i18n';
-import type { SupportedLocale } from '@/lib/i18n';
+import { useTranslation } from '@/i18n';
+import type { SupportedLocale } from '@/i18n';
 
 interface ContactFormProps {
   locale: SupportedLocale;

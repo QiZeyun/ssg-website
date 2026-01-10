@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useTranslation, type SupportedLocale, localeConfigs, supportedLocales } from '@/lib/i18n';
+import { useTranslation, type SupportedLocale, localeConfigs, supportedLocales } from '@/i18n';
 
 interface LanguageSwitcherProps {
   locale: SupportedLocale;
