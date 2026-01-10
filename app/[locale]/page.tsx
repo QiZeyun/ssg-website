@@ -1,87 +1,63 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { generateMetadataFromPath } from '@/lib/seo';
+import { t, isSupportedLocale } from '@/lib/i18n';
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generateMetadataFromPath('/');
+interface HomePageProps {
+  params: Promise<{ locale: string }>;
 }
 
-export default function HomePage() {
+export async function generateMetadata({ params }: HomePageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return generateMetadataFromPath(`/${locale}`);
+}
+
+export default async function HomePage({ params }: HomePageProps) {
+  const { locale } = await params;
+  
+  if (!isSupportedLocale(locale)) {
+    notFound();
+  }
+
   return (
     <main className="min-h-screen">
-      <header className="bg-white shadow-sm">
-        <nav className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold text-primary-600">
-              Your Company
-            </Link>
-            <div className="space-x-4">
-              <Link
-                href="/"
-                className="text-gray-700 hover:text-primary-600 transition-colors"
-              >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                className="text-gray-700 hover:text-primary-600 transition-colors"
-              >
-                About
-              </Link>
-              <Link
-                href="/contact"
-                className="text-gray-700 hover:text-primary-600 transition-colors"
-              >
-                Contact
-              </Link>
-            </div>
-          </div>
-        </nav>
-      </header>
-
       <section className="container mx-auto px-4 py-16">
         <div className="text-center">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Welcome to Your Company
+            {t(locale, 'home.title')}
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            We provide innovative solutions for your business needs. Explore our
-            services and discover how we can help you succeed.
+            {t(locale, 'home.subtitle')}
           </p>
           <div className="space-x-4">
             <Link
-              href="/about"
+              href={`/${locale}/about`}
               className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors"
             >
-              Learn More
+              {t(locale, 'common.learnMore')}
             </Link>
             <Link
-              href="/contact"
+              href={`/${locale}/contact`}
               className="inline-block border-2 border-primary-600 text-primary-600 px-6 py-3 rounded-lg hover:bg-primary-50 transition-colors"
             >
-              Contact Us
+              {t(locale, 'common.contactUs')}
             </Link>
           </div>
         </div>
 
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">Feature 1</h2>
-            <p className="text-gray-600">
-              Description of your first feature or service.
-            </p>
+            <h2 className="text-2xl font-semibold mb-4">{t(locale, 'home.feature1.title')}</h2>
+            <p className="text-gray-600">{t(locale, 'home.feature1.description')}</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">Feature 2</h2>
-            <p className="text-gray-600">
-              Description of your second feature or service.
-            </p>
+            <h2 className="text-2xl font-semibold mb-4">{t(locale, 'home.feature2.title')}</h2>
+            <p className="text-gray-600">{t(locale, 'home.feature2.description')}</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">Feature 3</h2>
-            <p className="text-gray-600">
-              Description of your third feature or service.
-            </p>
+            <h2 className="text-2xl font-semibold mb-4">{t(locale, 'home.feature3.title')}</h2>
+            <p className="text-gray-600">{t(locale, 'home.feature3.description')}</p>
           </div>
         </div>
       </section>
@@ -93,13 +69,13 @@ export default function HomePage() {
               <h3 className="text-xl font-semibold mb-4">Company</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/about" className="hover:text-primary-400">
-                    About Us
+                  <Link href={`/${locale}/about`} className="hover:text-primary-400">
+                    {t(locale, 'nav.about')}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-primary-400">
-                    Contact
+                  <Link href={`/${locale}/contact`} className="hover:text-primary-400">
+                    {t(locale, 'nav.contact')}
                   </Link>
                 </li>
               </ul>
@@ -108,12 +84,12 @@ export default function HomePage() {
               <h3 className="text-xl font-semibold mb-4">Legal</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/privacy" className="hover:text-primary-400">
+                  <Link href={`/${locale}/privacy`} className="hover:text-primary-400">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="hover:text-primary-400">
+                  <Link href={`/${locale}/terms`} className="hover:text-primary-400">
                     Terms of Service
                   </Link>
                 </li>

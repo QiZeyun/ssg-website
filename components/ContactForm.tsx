@@ -1,8 +1,15 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from '@/lib/i18n';
+import type { SupportedLocale } from '@/lib/i18n';
 
-export function ContactForm() {
+interface ContactFormProps {
+  locale: SupportedLocale;
+}
+
+export function ContactForm({ locale }: ContactFormProps) {
+  const t = useTranslation(locale);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -46,7 +53,7 @@ export function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-          Name
+          {t('contact.form.name')}
         </label>
         <input
           type="text"
@@ -56,13 +63,13 @@ export function ContactForm() {
           onChange={handleChange}
           required
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          placeholder="Your name"
+          placeholder={t('contact.form.name')}
         />
       </div>
 
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-          Email
+          {t('contact.form.email')}
         </label>
         <input
           type="email"
@@ -72,13 +79,13 @@ export function ContactForm() {
           onChange={handleChange}
           required
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          placeholder="your.email@example.com"
+          placeholder={t('contact.form.email')}
         />
       </div>
 
       <div>
         <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-          Message
+          {t('contact.form.message')}
         </label>
         <textarea
           id="message"
@@ -88,19 +95,19 @@ export function ContactForm() {
           required
           rows={6}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          placeholder="Your message"
+          placeholder={t('contact.form.message')}
         />
       </div>
 
       {submitStatus === 'success' && (
         <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
-          Thank you for your message! We&apos;ll get back to you soon.
+          {t('contact.form.success')}
         </div>
       )}
 
       {submitStatus === 'error' && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
-          Something went wrong. Please try again later.
+          {t('contact.form.error')}
         </div>
       )}
 
@@ -109,7 +116,7 @@ export function ContactForm() {
         disabled={isSubmitting}
         className="w-full bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isSubmitting ? 'Sending...' : 'Send Message'}
+        {isSubmitting ? t('contact.form.sending') : t('contact.form.send')}
       </button>
     </form>
   );

@@ -10,7 +10,7 @@ import type { PageSeoConfig, GlobalSeoConfig } from './seo/config/types';
 /**
  * 生成页面 Metadata（从数据源获取配置）
  * 
- * @param path 页面路径，例如 '/' 或 '/about'
+ * @param path 页面路径，例如 '/' 或 '/about' 或 '/zh/about' 或 '/en/pricing'
  * @param overrides 可选，覆盖默认配置
  * @returns Promise<Metadata> 生成的 Metadata
  */
@@ -20,7 +20,11 @@ export async function generateMetadataFromPath(
 ): Promise<Metadata> {
   const dataSource = getDefaultDataSource();
   const globalConfig = await dataSource.getGlobalConfig();
-  const pageConfig = await dataSource.getPageConfig(path);
+  
+  // 从多语言路径中提取基础路径（移除语言前缀）
+  // 例如：'/zh/about' -> '/about'，'/en/pricing' -> '/pricing'
+  const basePath = path.replace(/^\/(zh|en)/, '') || '/';
+  const pageConfig = await dataSource.getPageConfig(basePath);
 
   // 合并全局配置和页面配置
   const finalConfig: PageSeoConfig = {

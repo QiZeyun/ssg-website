@@ -80,6 +80,19 @@
         "title": "Contact Us | Your Company Name",
         "description": "Get in touch with us. We would love to hear from you."
       }
+    },
+    {
+      "path": "/pricing",
+      "title": "Pricing",
+      "description": "Choose the plan that fits your needs. Transparent pricing with no hidden fees.",
+      "keywords": ["pricing", "plans", "pricing plans", "subscription"],
+      "ogImage": "/og-pricing.jpg",
+      "noIndex": false,
+      "canonical": "/pricing",
+      "openGraph": {
+        "title": "Pricing | Your Company Name",
+        "description": "Choose the plan that fits your needs. Transparent pricing with no hidden fees."
+      }
     }
   ],
   "sitemap": {
@@ -98,6 +111,11 @@
         "path": "/contact",
         "changeFrequency": "weekly",
         "priority": 0.8
+      },
+      {
+        "path": "/pricing",
+        "changeFrequency": "monthly",
+        "priority": 0.9
       }
     ]
   },

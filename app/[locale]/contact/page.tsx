@@ -1,0 +1,64 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { generateMetadataFromPath } from '@/lib/seo';
+import { t, isSupportedLocale } from '@/lib/i18n';
+import { ContactForm } from '@/components/ContactForm';
+
+interface ContactPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: ContactPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return generateMetadataFromPath(`/${locale}/contact`);
+}
+
+export default async function ContactPage({ params }: ContactPageProps) {
+  const { locale } = await params;
+  
+  if (!isSupportedLocale(locale)) {
+    notFound();
+  }
+
+  return (
+    <main className="min-h-screen">
+      <section className="container mx-auto px-4 py-16">
+        <div className="max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold text-gray-900 mb-6">
+            {t(locale, 'contact.title')}
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">
+            {t(locale, 'contact.subtitle')}
+          </p>
+
+          <ContactForm locale={locale} />
+
+          <div className="mt-12 p-6 bg-gray-50 rounded-lg">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              {t(locale, 'contact.otherWays')}
+            </h2>
+            <div className="space-y-2 text-gray-700">
+              <p>
+                <strong>{t(locale, 'contact.email')}:</strong> contact@example.com
+              </p>
+              <p>
+                <strong>{t(locale, 'contact.phone')}:</strong> +1 (555) 123-4567
+              </p>
+              <p>
+                <strong>{t(locale, 'contact.address')}:</strong> 123 Business St, City, State 12345
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-gray-800 text-white mt-16">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <p>&copy; {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </main>
+  );
+}

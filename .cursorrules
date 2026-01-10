@@ -1,0 +1,66 @@
+# 项目编码规范
+
+## 多语言和文案规范
+
+### 核心原则
+**禁止在代码中硬编码任何显示文案**，所有文案必须从配置文件中获取。
+
+### 规则说明
+
+1. **禁止硬编码文案**
+   - ❌ 禁止使用 `locale === 'zh' ? '中文文案' : 'English text'` 这种三元运算符方式
+   - ❌ 禁止直接在 JSX 中写中文字符串，如 `{locale === 'zh' ? '/月' : '/month'}`
+   - ❌ 禁止使用硬编码的英文文案，如 `'Get Started'`、`'Save'` 等
+   - ✅ 必须使用翻译函数 `t(locale, 'translation.key')` 或 `useTranslation(locale)` Hook
+   - ✅ 所有文案都应该定义在 `data/translations.json` 中
+
+2. **文案配置位置**
+   - 翻译文案：`data/translations.json`
+   - 产品价格配置：`data/pricing-config.json`
+   - SEO 配置：`data/seo-config.json`
+
+3. **正确的使用方式**
+   ```typescript
+   // ✅ 正确：服务器组件中使用
+   import { t } from '@/lib/i18n';
+   const text = t(locale, 'pricing.perMonth');
+   
+   // ✅ 正确：客户端组件中使用
+   import { useTranslation } from '@/lib/i18n';
+   const t = useTranslation(locale);
+   const text = t('pricing.perMonth');
+   
+   // ❌ 错误：硬编码文案
+   const text = locale === 'zh' ? '/月' : '/month';
+   ```
+
+4. **特殊情况处理**
+   - 技术性常量（如 API 端点、配置键名）可以使用英文硬编码
+   - CSS 类名、变量名等代码标识符可以使用英文
+   - 日志输出可以使用英文（开发调试用）
+
+### 示例
+
+#### ❌ 错误示例
+```typescript
+// 禁止硬编码文案
+{locale === 'zh' ? '/月' : '/month'}
+{locale === 'zh' ? '年付' : 'Yearly'}
+{locale === 'zh' ? `节省 ${savings}%` : `Save ${savings}%`}
+{tier.buttonText || 'Get Started'}
+```
+
+#### ✅ 正确示例
+```typescript
+// 从翻译配置中获取
+{t('pricing.perMonth')}
+{t('pricing.yearlyLabel')}
+{t('pricing.savePercent', { percent: savings })}
+{tier.buttonText || t('pricing.getStarted')}
+```
+
+### 代码审查检查点
+- [ ] 检查是否有 `locale === 'zh'` 或 `locale === 'en'` 的三元运算符
+- [ ] 检查是否有硬编码的中文字符串
+- [ ] 检查是否有硬编码的英文显示文案
+- [ ] 确认所有文案都在 `data/translations.json` 中有对应的翻译键

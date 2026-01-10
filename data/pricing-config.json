@@ -1,0 +1,354 @@
+{
+  "zh": {
+    "productName": "产品套餐",
+    "description": "选择适合您的套餐，享受专业服务",
+    "billingCycle": "both",
+    "tiers": [
+      {
+        "id": "free",
+        "name": "免费版",
+        "description": "适合个人用户和初创团队",
+        "price": {
+          "monthly": 0,
+          "yearly": 0,
+          "currency": "CNY"
+        },
+        "badge": "免费",
+        "features": [
+          {
+            "name": "基础功能",
+            "included": true
+          },
+          {
+            "name": "1 个项目管理",
+            "included": true
+          },
+          {
+            "name": "5 个用户成员",
+            "included": true
+          },
+          {
+            "name": "10GB 存储空间",
+            "included": true
+          },
+          {
+            "name": "基础支持",
+            "included": true
+          },
+          {
+            "name": "高级功能",
+            "included": false
+          },
+          {
+            "name": "无限项目",
+            "included": false
+          },
+          {
+            "name": "优先支持",
+            "included": false
+          }
+        ],
+        "buttonText": "免费开始",
+        "buttonLink": "/signup"
+      },
+      {
+        "id": "pro",
+        "name": "专业版",
+        "description": "适合成长型团队",
+        "price": {
+          "monthly": 99,
+          "yearly": 990,
+          "currency": "CNY"
+        },
+        "recommended": true,
+        "popular": true,
+        "badge": "推荐",
+        "features": [
+          {
+            "name": "基础功能",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "无限项目",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "50 个用户成员",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "500GB 存储空间",
+            "included": true
+          },
+          {
+            "name": "高级功能",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "API 访问",
+            "included": true
+          },
+          {
+            "name": "优先支持",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "自定义集成",
+            "included": false
+          }
+        ],
+        "buttonText": "立即开始",
+        "buttonLink": "/signup"
+      },
+      {
+        "id": "enterprise",
+        "name": "企业版",
+        "description": "适合大型企业和团队",
+        "price": {
+          "monthly": 499,
+          "yearly": 4990,
+          "currency": "CNY"
+        },
+        "features": [
+          {
+            "name": "专业版所有功能",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "无限用户成员",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "无限存储空间",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "高级安全功能",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "自定义集成",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "专属客户经理",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "SLA 保证",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "培训和技术支持",
+            "included": true,
+            "highlighted": true
+          }
+        ],
+        "buttonText": "联系销售",
+        "buttonLink": "/contact"
+      }
+    ],
+    "faq": [
+      {
+        "question": "可以随时升级或降级套餐吗？",
+        "answer": "是的，您可以随时在账户设置中升级或降级套餐。升级立即生效，降级会在当前计费周期结束后生效。"
+      },
+      {
+        "question": "年付有优惠吗？",
+        "answer": "是的，年付用户可以享受 2 个月免费，相当于 10 个月的付款享受 12 个月的服务。"
+      },
+      {
+        "question": "支持退款吗？",
+        "answer": "年付用户在前 30 天内可以申请全额退款。月付用户可以在当前计费周期结束前取消，不会续费。"
+      }
+    ]
+  },
+  "en": {
+    "productName": "Pricing Plans",
+    "description": "Choose the plan that fits your needs",
+    "billingCycle": "both",
+    "tiers": [
+      {
+        "id": "free",
+        "name": "Free",
+        "description": "Perfect for individuals and startups",
+        "price": {
+          "monthly": 0,
+          "yearly": 0,
+          "currency": "USD"
+        },
+        "badge": "Free",
+        "features": [
+          {
+            "name": "Basic Features",
+            "included": true
+          },
+          {
+            "name": "1 Project",
+            "included": true
+          },
+          {
+            "name": "5 Team Members",
+            "included": true
+          },
+          {
+            "name": "10GB Storage",
+            "included": true
+          },
+          {
+            "name": "Basic Support",
+            "included": true
+          },
+          {
+            "name": "Advanced Features",
+            "included": false
+          },
+          {
+            "name": "Unlimited Projects",
+            "included": false
+          },
+          {
+            "name": "Priority Support",
+            "included": false
+          }
+        ],
+        "buttonText": "Get Started Free",
+        "buttonLink": "/signup"
+      },
+      {
+        "id": "pro",
+        "name": "Pro",
+        "description": "For growing teams",
+        "price": {
+          "monthly": 29,
+          "yearly": 290,
+          "currency": "USD"
+        },
+        "recommended": true,
+        "popular": true,
+        "badge": "Recommended",
+        "features": [
+          {
+            "name": "Basic Features",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "Unlimited Projects",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "50 Team Members",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "500GB Storage",
+            "included": true
+          },
+          {
+            "name": "Advanced Features",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "API Access",
+            "included": true
+          },
+          {
+            "name": "Priority Support",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "Custom Integrations",
+            "included": false
+          }
+        ],
+        "buttonText": "Get Started",
+        "buttonLink": "/signup"
+      },
+      {
+        "id": "enterprise",
+        "name": "Enterprise",
+        "description": "For large teams and organizations",
+        "price": {
+          "monthly": 149,
+          "yearly": 1490,
+          "currency": "USD"
+        },
+        "features": [
+          {
+            "name": "All Pro Features",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "Unlimited Team Members",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "Unlimited Storage",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "Advanced Security",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "Custom Integrations",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "Dedicated Account Manager",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "SLA Guarantee",
+            "included": true,
+            "highlighted": true
+          },
+          {
+            "name": "Training & Support",
+            "included": true,
+            "highlighted": true
+          }
+        ],
+        "buttonText": "Contact Sales",
+        "buttonLink": "/contact"
+      }
+    ],
+    "faq": [
+      {
+        "question": "Can I upgrade or downgrade at any time?",
+        "answer": "Yes, you can upgrade or downgrade your plan anytime from your account settings. Upgrades take effect immediately, while downgrades take effect at the end of your current billing cycle."
+      },
+      {
+        "question": "Is there a discount for annual billing?",
+        "answer": "Yes, annual plans get 2 months free, which means you pay for 10 months and get 12 months of service."
+      },
+      {
+        "question": "Do you offer refunds?",
+        "answer": "Annual plans can request a full refund within the first 30 days. Monthly plans can cancel before the end of the current billing cycle to avoid renewal."
+      }
+    ]
+  }
+}

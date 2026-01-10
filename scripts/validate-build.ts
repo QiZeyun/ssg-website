@@ -17,9 +17,14 @@ interface FileCheck {
 }
 
 const REQUIRED_FILES: FileCheck[] = [
-  { path: 'out/index.html', description: '主页' },
-  { path: 'out/about/index.html', description: '关于页面' },
-  { path: 'out/contact/index.html', description: '联系页面' },
+  { path: 'out/zh/index.html', description: '主页（中文）' },
+  { path: 'out/en/index.html', description: '主页（英文）' },
+  { path: 'out/zh/about/index.html', description: '关于页面（中文）' },
+  { path: 'out/en/about/index.html', description: '关于页面（英文）' },
+  { path: 'out/zh/contact/index.html', description: '联系页面（中文）' },
+  { path: 'out/en/contact/index.html', description: '联系页面（英文）' },
+  { path: 'out/zh/pricing/index.html', description: '价格页面（中文）' },
+  { path: 'out/en/pricing/index.html', description: '价格页面（英文）' },
   { path: 'out/robots.txt', description: 'Robots.txt' },
   { path: 'out/sitemap.xml', description: 'Sitemap' },
 ];
@@ -96,31 +101,39 @@ function validateHtmlContent(): void {
   console.log('');
   console.log('🔍 验证 HTML 内容...');
   
-  const indexPath = join(OUT_DIR, 'index.html');
-  if (!checkFile(indexPath)) {
-    console.log('  ❌ index.html 不存在');
-    return;
+  // 验证中文主页
+  const zhIndexPath = join(OUT_DIR, 'zh', 'index.html');
+  if (checkFile(zhIndexPath)) {
+    const htmlContent = readFileSync(zhIndexPath, 'utf-8');
+    
+    const titleMatch = htmlContent.match(/<title>([^<]*)<\/title>/i);
+    if (titleMatch) {
+      console.log(`  ✅ 中文主页包含 title 标签: ${titleMatch[1]}`);
+    } else {
+      console.log('  ❌ 中文主页缺少 title 标签');
+    }
+    
+    if (htmlContent.includes('name="description"')) {
+      console.log('  ✅ 中文主页包含 description meta 标签');
+    } else {
+      console.log('  ⚠️  中文主页缺少 description meta 标签');
+    }
+    
+    if (htmlContent.includes('property="og:')) {
+      console.log('  ✅ 中文主页包含 Open Graph 标签');
+    } else {
+      console.log('  ⚠️  中文主页缺少 Open Graph 标签');
+    }
+  } else {
+    console.log('  ❌ 中文主页不存在');
   }
   
-  const htmlContent = readFileSync(indexPath, 'utf-8');
-  
-  const titleMatch = htmlContent.match(/<title>([^<]*)<\/title>/i);
-  if (titleMatch) {
-    console.log(`  ✅ index.html 包含 title 标签: ${titleMatch[1]}`);
+  // 验证英文主页
+  const enIndexPath = join(OUT_DIR, 'en', 'index.html');
+  if (checkFile(enIndexPath)) {
+    console.log('  ✅ 英文主页存在');
   } else {
-    console.log('  ❌ index.html 缺少 title 标签');
-  }
-  
-  if (htmlContent.includes('name="description"')) {
-    console.log('  ✅ index.html 包含 description meta 标签');
-  } else {
-    console.log('  ⚠️  index.html 缺少 description meta 标签');
-  }
-  
-  if (htmlContent.includes('property="og:')) {
-    console.log('  ✅ index.html 包含 Open Graph 标签');
-  } else {
-    console.log('  ⚠️  index.html 缺少 Open Graph 标签');
+    console.log('  ❌ 英文主页不存在');
   }
 }
 

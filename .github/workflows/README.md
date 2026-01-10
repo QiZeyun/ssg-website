@@ -7,7 +7,9 @@
 
 ### 触发条件
 - **生产部署**：当代码推送到 `main` 分支时触发
-- **预览部署**：当创建 Pull Request 到 `main` 分支时触发
+- **预览部署**：
+  - 当代码推送到除 `main` 外的任意分支时触发
+  - 当创建 Pull Request 到任意分支时触发
 
 ### 工作流步骤
 1. **检出代码** - 从 GitHub 仓库获取代码
@@ -97,7 +99,10 @@ cat .vercel/project.json
 1. **静态导出配置**：项目已配置 `output: 'export'`，会生成纯静态 HTML 文件
 2. **构建输出**：构建产物位于 `out` 目录
 3. **环境变量**：需要在 Vercel 项目设置中配置生产环境变量
-4. **预览部署**：Pull Request 会创建预览部署，不会影响生产环境
+4. **预览部署**：
+   - 任意分支 push（除 main 外）会创建预览部署
+   - Pull Request 会创建预览部署，不会影响生产环境
+5. **生产部署**：只有推送到 `main` 分支时才会触发生产部署
 
 ## 故障排查
 
@@ -105,6 +110,7 @@ cat .vercel/project.json
 - 检查 GitHub Secrets 是否配置正确
 - 查看 GitHub Actions 日志获取详细错误信息
 - 确认 Vercel 项目 ID 和组织 ID 是否正确
+- **Vercel CLI 版本问题**：如果遇到 `--yes` 选项错误，请确保工作流使用最新版本的 Vercel Action（已移除 `--yes` 选项）
 
 ### 构建失败
 - 检查 `pnpm-lock.yaml` 是否已提交
@@ -115,3 +121,11 @@ cat .vercel/project.json
 - 检查环境变量是否正确配置
 - 确认 `next.config.js` 中的静态导出配置正确
 - 查看 Vercel 部署日志
+
+### 常见错误
+
+#### `Error! unknown or unexpected option: --yes`
+- **原因**：Vercel CLI 25.1.0 及以上版本已移除 `--yes` 选项
+- **解决方案**：从 `vercel-args` 中移除 `--yes` 选项
+  - 生产部署：使用 `vercel-args: '--prod'`
+  - 预览部署：不设置 `vercel-args` 或设置为空

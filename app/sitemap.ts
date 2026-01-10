@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { getDefaultDataSource } from '@/lib/seo/config';
+import { supportedLocales } from '@/lib/i18n/config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const dataSource = getDefaultDataSource();
@@ -7,17 +8,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const sitemapConfig = await dataSource.getSitemapConfig();
   const baseUrl = globalConfig.siteUrl;
 
-  return sitemapConfig.map((page) => {
-    const url = `${baseUrl}${page.path}`;
-    const lastModified = page.lastModified 
-      ? (typeof page.lastModified === 'string' ? new Date(page.lastModified) : page.lastModified)
-      : new Date();
+  // 为每个语言生成 sitemap URL
+  const sitemapEntries: MetadataRoute.Sitemap = [];
 
-    return {
-      url,
-      lastModified,
-      changeFrequency: page.changeFrequency || 'weekly',
-      priority: page.priority || 0.8,
-    };
-  });
+  for (const locale of supportedLocales) {
+    for (const page of sitemapConfig) {
+      // 为每个语言和页面生成 URL
+      const localizedPath = `/${locale}${page.path === '/' ? '' : page.path}`;
+      const url = `${baseUrl}${localizedPath}`;
+      const lastModified = page.lastModified 
+        ? (typeof page.lastModified === 'string' ? new Date(page.lastModified) : page.lastModified)
+        : new Date();
+
+      sitemapEntries.push({
+        url,
+        lastModified,
+        changeFrequency: page.changeFrequency || 'weekly',
+        priority: page.priority || 0.8,
+      });
+    }
+  }
+
+  return sitemapEntries;
 }

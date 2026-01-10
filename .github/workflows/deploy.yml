@@ -2,11 +2,7 @@ name: Build and Deploy to Vercel
 
 on:
   push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   build-and-deploy:
@@ -51,13 +47,20 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod --yes'
+          vercel-args: '--prod'
 
-      - name: Deploy to Vercel (Preview)
+      - name: Deploy to Vercel (Preview - Push)
+        uses: amondnet/vercel-action@v25
+        if: github.ref != 'refs/heads/main' && github.event_name == 'push'
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy to Vercel (Preview - PR)
         uses: amondnet/vercel-action@v25
         if: github.event_name == 'pull_request'
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--yes'

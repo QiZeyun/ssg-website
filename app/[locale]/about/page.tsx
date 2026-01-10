@@ -1,52 +1,36 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { generateMetadataFromPath } from '@/lib/seo';
+import { t, isSupportedLocale } from '@/lib/i18n';
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generateMetadataFromPath('/about');
+interface AboutPageProps {
+  params: Promise<{ locale: string }>;
 }
 
-export default function AboutPage() {
+export async function generateMetadata({ params }: AboutPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return generateMetadataFromPath(`/${locale}/about`);
+}
+
+export default async function AboutPage({ params }: AboutPageProps) {
+  const { locale } = await params;
+  
+  if (!isSupportedLocale(locale)) {
+    notFound();
+  }
+
   return (
     <main className="min-h-screen">
-      <header className="bg-white shadow-sm">
-        <nav className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold text-primary-600">
-              Your Company
-            </Link>
-            <div className="space-x-4">
-              <Link
-                href="/"
-                className="text-gray-700 hover:text-primary-600 transition-colors"
-              >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                className="text-gray-700 hover:text-primary-600 transition-colors"
-              >
-                About
-              </Link>
-              <Link
-                href="/contact"
-                className="text-gray-700 hover:text-primary-600 transition-colors"
-              >
-                Contact
-              </Link>
-            </div>
-          </div>
-        </nav>
-      </header>
-
       <section className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-gray-900 mb-6">About Us</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-6">
+            {t(locale, 'about.title')}
+          </h1>
           
           <div className="prose prose-lg max-w-none">
             <p className="text-xl text-gray-600 mb-6">
-              Welcome to Your Company Name. We are dedicated to providing
-              exceptional services and solutions for our clients.
+              {t(locale, 'about.subtitle')}
             </p>
 
             <h2 className="text-3xl font-semibold text-gray-900 mt-8 mb-4">
@@ -78,10 +62,10 @@ export default function AboutPage() {
 
           <div className="mt-12">
             <Link
-              href="/contact"
+              href={`/${locale}/contact`}
               className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors"
             >
-              Get in Touch
+              {t(locale, 'common.contactUs')}
             </Link>
           </div>
         </div>
