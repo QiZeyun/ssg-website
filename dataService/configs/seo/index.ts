@@ -5,7 +5,7 @@
  * 对外暴露的函数均为异步（保持接口一致性）
  */
 
-import seoConfigData from '@/data/seo-config.json';
+import seoConfigData from '../../data/seo-config.json';
 import type { SeoConfig, PageSeoConfig, GlobalSeoConfig, SitemapPageConfig, RobotsConfig } from './types';
 
 /**

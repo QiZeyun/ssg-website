@@ -5,7 +5,7 @@
  * 对外暴露的函数均为异步（保持接口一致性）
  */
 
-import pricingConfigData from '@/data/pricing-config.json';
+import pricingConfigData from '../../data/pricing-config.json';
 import type { PricingConfig, LocalizedPricingConfig } from './types';
 import { defaultLocale } from '@/i18n/config';
 
@@ -68,4 +68,4 @@ export async function getSupportedLocales(): Promise<string[]> {
 }
 
 // 导出类型
-export type { PricingConfig, LocalizedPricingConfig } from './types';
+export type { PricingConfig, LocalizedPricingConfig, PricingTier, PricingFeature } from './types';

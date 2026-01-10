@@ -2,7 +2,7 @@
 
 ## 概述
 
-`configSource/configs/` 模块提供了统一的函数式接口，用于获取配置信息。
+`dataService/configs/` 模块提供了统一的函数式接口，用于获取配置信息。
 
 此模块的核心设计原则是：
 - **抽象性**：调用方不需要感知数据的具体来源（JSON 文件、未来可能的 CMS、API 等）
@@ -12,7 +12,7 @@
 ## 目录结构
 
 ```
-configSource/configs/
+dataService/configs/
 ├── index.ts            # 统一导出
 ├── seo/                # SEO 配置数据源
 │   ├── index.ts        # 函数式实现（直接 import JSON）
@@ -27,7 +27,7 @@ configSource/configs/
 ### SEO 配置数据源
 
 ```typescript
-import { getGlobalConfig, getPageConfig, getSitemapConfig, getRobotsConfig } from '@/configSource/configs/seo';
+import { getGlobalConfig, getPageConfig, getSitemapConfig, getRobotsConfig } from '@/dataService';
 
 // 获取全局 SEO 配置
 const globalConfig = await getGlobalConfig();
@@ -45,7 +45,7 @@ const robotsConfig = await getRobotsConfig();
 ### 价格配置数据源
 
 ```typescript
-import { getPricingConfig, getAllPricingConfigs, hasLocale, getSupportedLocales } from '@/configSource/configs/pricing';
+import { getPricingConfig, getAllPricingConfigs, hasLocale, getSupportedLocales } from '@/dataService';
 
 // 获取指定语言的产品价格配置
 const config = await getPricingConfig('zh');
@@ -67,7 +67,7 @@ const locales = await getSupportedLocales();
 1. **定义类型**：创建 `types.ts` 文件定义配置类型
 
 ```typescript
-// configSource/configs/news/types.ts
+// dataService/configs/news/types.ts
 export interface NewsConfig {
   title: string;
   articles: Array<{...}>;
@@ -77,8 +77,8 @@ export interface NewsConfig {
 2. **实现函数**：在 `index.ts` 中直接 import JSON 并实现函数
 
 ```typescript
-// configSource/configs/news/index.ts
-import newsConfigData from '@/data/news-config.json';
+// dataService/configs/news/index.ts
+import newsConfigData from '../../data/news-config.json';
 import type { NewsConfig } from './types';
 
 /**

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { generateMetadataFromPath } from '@/configSource/seo';
+import { generateMetadataFromPath } from '@/dataService';
 import { t, isSupportedLocale } from '@/i18n';
 
 interface AboutPageProps {

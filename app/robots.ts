@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getGlobalConfig, getRobotsConfig } from '@/configSource/configs/seo';
+import { getGlobalConfig, getRobotsConfig } from '@/dataService';
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const globalConfig = await getGlobalConfig();

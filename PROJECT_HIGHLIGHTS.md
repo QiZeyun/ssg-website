@@ -28,7 +28,7 @@ import {
   getPageConfig, 
   getSitemapConfig, 
   getRobotsConfig 
-} from '@/configSource/configs/seo';
+} from '@/dataService';
 
 // 使用示例
 const globalConfig = await getGlobalConfig();
@@ -652,7 +652,7 @@ import {
   getPageConfig, 
   getSitemapConfig, 
   getRobotsConfig 
-} from '@/configSource/configs/seo';
+} from '@/dataService';
 
 // 使用示例
 const globalConfig = await getGlobalConfig();

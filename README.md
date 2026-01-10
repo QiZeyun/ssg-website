@@ -80,29 +80,38 @@ pnpm build:preview
 ```
 ssg-website/
 ├── app/                    # Next.js App Router 页面
-│   ├── about/             # 关于页面
-│   ├── contact/           # 联系页面
-│   ├── layout.tsx         # 根布局
-│   ├── page.tsx           # 主页
+│   ├── [locale]/          # 多语言路由
+│   │   ├── about/         # 关于页面
+│   │   ├── contact/       # 联系页面
+│   │   ├── pricing/       # 价格页面
+│   │   ├── layout.tsx     # 布局组件
+│   │   └── page.tsx       # 主页
 │   ├── robots.ts          # Robots.txt 生成
 │   └── sitemap.ts         # Sitemap 生成
 ├── components/            # React 组件
 │   ├── ContactForm.tsx    # 联系表单
-│   └── StructuredData.tsx # 结构化数据组件
-├── data/                  # 数据文件
-│   ├── seo-config.json    # SEO 配置文件
-│   └── README.md          # SEO 配置说明
-├── lib/                   # 工具库
-│   └── seo/               # SEO 相关工具
-│       ├── config/        # SEO 配置系统
-│       │   ├── interface.ts  # 数据源接口
-│       │   ├── types.ts      # 类型定义
-│       │   ├── file-source.ts # 本地文件数据源
-│       │   └── index.ts      # 导出入口
-│       └── seo.ts         # SEO 工具函数
+│   ├── PricingTable.tsx   # 价格表格
+│   ├── PricingCard.tsx    # 价格卡片
+│   └── NavigationWrapper.tsx # 导航包装器
+├── dataService/           # 数据服务模块
+│   ├── configs/           # 配置数据源
+│   │   ├── seo/           # SEO 配置
+│   │   └── pricing/       # 价格配置
+│   ├── data/              # 数据文件
+│   │   ├── seo-config.json    # SEO 配置文件
+│   │   └── pricing-config.json # 价格配置文件
+│   ├── generateMetadata.ts # SEO Metadata 生成工具
+│   └── index.ts           # 统一导出
+├── i18n/                  # 国际化配置
+│   ├── translations.ts    # 翻译文件
+│   └── config.ts          # i18n 配置
+├── translations/          # 翻译文案
+│   ├── zh.ts             # 中文翻译
+│   └── en.ts             # 英文翻译
 ├── scripts/               # 脚本文件
-│   ├── validate-build.sh  # 构建验证脚本
-│   └── preview-build.sh   # 预览脚本
+│   ├── validate-build.ts  # 构建验证脚本
+│   └── preview-build.ts   # 预览脚本
+├── eslint-local-rules/    # 自定义 ESLint 规则
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml     # GitHub Actions 工作流
@@ -118,7 +127,7 @@ ssg-website/
 
 ### 配置文件
 
-配置文件位置：`data/seo-config.json`
+配置文件位置：`dataService/data/seo-config.json`
 
 配置文件包含以下部分：
 
@@ -153,14 +162,14 @@ ssg-website/
 
 ```typescript
 // 在页面中使用
-import { generateMetadataFromPath } from '@/configSource/seo';
+import { generateMetadataFromPath } from '@/dataService';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateMetadataFromPath('/about');
 }
 ```
 
-详细说明请参考 [data/README.md](data/README.md)
+详细说明请参考 [dataService/data/README.md](dataService/data/README.md)
 
 ### 页面 SEO Metadata 生成
 
@@ -185,7 +194,7 @@ export async function generateMetadata(): Promise<Metadata> {
 ```typescript
 // app/[locale]/about/page.tsx
 import type { Metadata } from 'next';
-import { generateMetadataFromPath } from '@/configSource/seo';
+import { generateMetadataFromPath } from '@/dataService';
 
 interface AboutPageProps {
   params: Promise<{ locale: string }>;
@@ -241,7 +250,7 @@ export async function generateMetadata({ params }: LocaleLayoutProps): Promise<M
 
 **相关文档**：
 - [Next.js Metadata API 文档](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
-- [SEO 配置说明](data/README.md)
+- [SEO 配置说明](dataService/data/README.md)
 
 ### ESLint 规则：强制要求 generateMetadata
 
@@ -410,7 +419,7 @@ vercel --prod
 - [工程亮点与知识点总结](PROJECT_HIGHLIGHTS.md) - **📖 推荐阅读**：工程亮点、SSG/官网知识点、技术要点和扩展学习
 - [部署指南](DEPLOY.md) - 详细的部署说明和故障排查
 - [验证指南](VALIDATE.md) - 本地验证构建产物的完整指南
-- [SEO 配置说明](data/README.md) - SEO 配置系统的详细文档
+- [SEO 配置说明](dataService/data/README.md) - SEO 配置系统的详细文档
 - [GitHub Actions 工作流](.github/workflows/README.md) - CI/CD 工作流说明
 - [Webpack 错误解释](WEBPACK_ERROR_EXPLANATION.md) - Webpack 相关技术问题详细解释
 
@@ -454,7 +463,7 @@ pnpm build
 
 ### 页面内容不正确
 
-- 检查 `data/seo-config.json` 配置是否正确
+- 检查 `dataService/data/seo-config.json` 配置是否正确
 - 确认页面组件正确使用 `generateMetadata`（⚠️ 不能删除此函数）
 - 验证环境变量是否正确设置
 - 检查生成的 HTML 中是否包含正确的 SEO 元数据（使用浏览器开发者工具查看）

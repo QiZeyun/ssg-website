@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getGlobalConfig, getSitemapConfig } from '@/configSource/configs/seo';
+import { getGlobalConfig, getSitemapConfig } from '@/dataService';
 import { supportedLocales } from '@/i18n/config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

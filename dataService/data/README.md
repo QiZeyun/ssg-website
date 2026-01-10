@@ -6,7 +6,7 @@
 
 ## 配置文件
 
-配置文件位置：`data/seo-config.json`
+配置文件位置：`dataService/data/seo-config.json`
 
 ### 配置结构
 
@@ -83,7 +83,7 @@ case 'cms':
 
 ```typescript
 import type { Metadata } from 'next';
-import { generateMetadataFromPath } from '@/configSource/seo';
+import { generateMetadataFromPath } from '@/dataService';
 
 /**
  * ⚠️ 重要：这是 Next.js App Router 的特殊导出函数，用于生成页面的 <head> 标签内容。
@@ -99,12 +99,12 @@ export async function generateMetadata(): Promise<Metadata> {
 - `generateMetadata` 是 Next.js App Router 的特殊约定函数名，不能随意修改或删除
 - 此函数会在构建时被 Next.js 自动调用，将返回的 `Metadata` 对象转换为 HTML 的 `<head>` 标签
 - 删除此函数会导致页面缺少 SEO 元数据（title、description、Open Graph、Twitter Card 等）
-- `generateMetadataFromPath` 函数在 `configSource/seo` 模块中，它是对配置数据获取和 Metadata 生成的封装
+- `generateMetadataFromPath` 函数在 `dataService/seo` 模块中，它是对配置数据获取和 Metadata 生成的封装
 
 ### 获取全局配置
 
 ```typescript
-import { getGlobalConfig } from '@/configSource/configs/seo';
+import { getGlobalConfig } from '@/dataService';
 
 const globalConfig = await getGlobalConfig();
 console.log(globalConfig.siteName);
@@ -113,7 +113,7 @@ console.log(globalConfig.siteName);
 ### 获取页面配置
 
 ```typescript
-import { getPageConfig } from '@/configSource/configs/seo';
+import { getPageConfig } from '@/dataService';
 
 const pageConfig = await getPageConfig('/about');
 if (pageConfig) {
@@ -126,5 +126,4 @@ if (pageConfig) {
 1. 配置文件直接通过 `import` 加载，由构建工具在构建时处理
 2. 页面路径应该以 `/` 开头，根路径使用 `/` 而不是空字符串
 3. `siteUrl` 可以通过环境变量 `NEXT_PUBLIC_SITE_URL` 在运行时动态覆盖
-4. 所有配置数据获取函数都在 `@/configSource/configs/seo` 模块中
-5. Metadata 生成工具函数在 `@/configSource/seo` 模块中
+4. 所有配置数据获取函数和 Metadata 生成工具函数都在 `@/dataService` 模块中统一导出

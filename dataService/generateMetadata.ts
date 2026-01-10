@@ -4,8 +4,8 @@
  */
 
 import type { Metadata } from 'next';
-import { getGlobalConfig, getPageConfig } from '../configs/seo';
-import type { PageSeoConfig, GlobalSeoConfig } from '../configs/seo/types';
+import { getGlobalConfig, getPageConfig } from './configs/seo';
+import type { PageSeoConfig, GlobalSeoConfig } from './configs/seo/types';
 
 /**
  * 生成页面 Metadata（从数据源获取配置）

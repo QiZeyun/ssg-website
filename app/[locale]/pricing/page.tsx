@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { generateMetadataFromPath } from '@/configSource/seo';
+import { generateMetadataFromPath, getPricingConfig } from '@/dataService';
 import { t, isSupportedLocale } from '@/i18n';
-import { getPricingConfig } from '@/configSource/configs/pricing';
 import { PricingTable } from '@/components/PricingTable';
 
 interface PricingPageProps {

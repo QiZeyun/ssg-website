@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
-import { getGlobalConfig } from '@/configSource/configs/seo';
+import { getGlobalConfig } from '@/dataService';
 import { getLocaleConfig, defaultLocale, isSupportedLocale, type SupportedLocale } from '@/i18n';
 import { NavigationWrapper } from '@/components/NavigationWrapper';
 

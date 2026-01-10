@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { PricingConfig } from '@/configSource/configs/pricing/types';
+import type { PricingConfig } from '@/dataService';
 import { PricingCard } from './PricingCard';
 import { useTranslation } from '@/i18n';
 
