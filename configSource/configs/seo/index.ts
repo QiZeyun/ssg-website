@@ -1,10 +1,7 @@
 /**
  * SEO 配置数据源模块
  * 
- * 提供统一的接口来获取 SEO 配置
- * 
- * 当前实现为文件数据源。如需支持其他数据源类型（如 CMS、API、数据库等），
- * 可以实现对应的数据源类并在本函数中添加相应的创建逻辑。
+ * 提供统一的接口来获取 SEO 配置，支持多种数据源
  */
 
 import type { ISeoDataSource } from './interface';
@@ -12,15 +9,55 @@ import { FileSeoDataSource } from './file-source';
 import type { SeoConfig, PageSeoConfig, GlobalSeoConfig, SitemapPageConfig, RobotsConfig } from './types';
 
 /**
- * 创建 SEO 配置数据源
+ * 数据源类型
+ */
+export type DataSourceType = 'file' | 'cms' | 'api' | 'database';
+
+/**
+ * 数据源工厂
  * 
- * @param configPath 可选，配置数据源的路径。如果不提供则使用默认路径
+ * 根据环境变量或配置创建相应的数据源实例
+ * 可以通过 NEXT_PUBLIC_SEO_DATA_SOURCE 环境变量指定数据源类型
+ * 
+ * @param options 配置选项
  * @returns ISeoDataSource 数据源实例
  */
-export function createSeoDataSource(configPath?: string): ISeoDataSource {
-  // 当前实现：直接返回文件数据源实例
-  // 调用方不需要感知数据的具体存储路径和格式
-  return new FileSeoDataSource(configPath);
+export function createSeoDataSource(
+  options?: {
+    type?: DataSourceType;
+    configPath?: string;
+    [key: string]: unknown;
+  }
+): ISeoDataSource {
+  // 从环境变量获取数据源类型，默认使用 file
+  const sourceType = options?.type || 
+    (process.env.NEXT_PUBLIC_SEO_DATA_SOURCE as DataSourceType | undefined) || 
+    'file';
+
+  switch (sourceType) {
+    case 'file':
+      // 只传递 configPath（如果提供），路径的默认值由 FileSeoDataSource 内部处理
+      // 调用方不需要感知数据的具体存储路径和格式
+      return new FileSeoDataSource(options?.configPath as string | undefined);
+    
+    case 'cms':
+      // TODO: 实现 CMS 数据源
+      // return new CmsSeoDataSource(options);
+      throw new Error('CMS 数据源尚未实现，请使用 file 数据源');
+    
+    case 'api':
+      // TODO: 实现 API 数据源
+      // return new ApiSeoDataSource(options);
+      throw new Error('API 数据源尚未实现，请使用 file 数据源');
+    
+    case 'database':
+      // TODO: 实现数据库数据源
+      // return new DatabaseSeoDataSource(options);
+      throw new Error('数据库数据源尚未实现，请使用 file 数据源');
+    
+    default:
+      throw new Error(`不支持的数据源类型: ${sourceType}`);
+  }
 }
 
 /**

@@ -69,7 +69,7 @@ export class FileMyConfigDataSource extends BaseFileDataSource<MyConfig> impleme
 - 使用 `readFileSync` 同步读取文件
 - 支持文件修改时间检查（自动刷新缓存）
 - 适合构建时或需要同步访问的场景
-- 示例：`FilePricingDataSource`
+- 示例：`FileSeoDataSource`
 
 注意：即使在同步模式下，接口方法仍然应该是 `async`，async 函数会自动将同步返回值包装为 Promise。
 

@@ -24,10 +24,9 @@ configSource/configs/
 │   ├── types.ts        # 类型定义
 │   └── file-source.ts  # 文件数据源实现（继承 BaseFileDataSource）
 └── pricing/            # 价格配置数据源
-    ├── index.ts        # 工厂函数和默认实例
+    ├── index.ts        # 数据源实现和导出（逻辑直接在此文件，异步实现）
     ├── interface.ts    # 数据源接口定义
-    ├── types.ts        # 类型定义
-    └── file-source.ts  # 文件数据源实现（继承 BaseFileDataSource）
+    └── types.ts        # 类型定义
 ```
 
 ## 使用方式
@@ -43,7 +42,10 @@ const globalConfig = await dataSource.getGlobalConfig();
 const pageConfig = await dataSource.getPageConfig('/about');
 
 // 或创建自定义数据源（指定配置文件路径）
-const customDataSource = createSeoDataSource('/custom/path/to/config');
+const customDataSource = createSeoDataSource({
+  type: 'file',
+  configPath: '/custom/path/to/config'
+});
 ```
 
 ### 价格配置数据源
@@ -61,11 +63,56 @@ const customDataSource = createPricingDataSource('/custom/path/to/config');
 
 ## 添加新的配置类型
 
-要添加新的配置类型（如 `news`、`products` 等），只需要：
+要添加新的配置类型（如 `news`、`products` 等），可以选择两种方式：
 
-1. **定义类型和接口**：创建对应的 `types.ts` 和 `interface.ts`
+### 方式一：直接实现（推荐，如 pricing 模块）
 
-2. **实现文件数据源**：使用 `BaseFileDataSource` 基类，大幅减少代码量
+直接在 `index.ts` 中实现异步数据获取逻辑，无需单独的文件：
+
+```typescript
+// configSource/configs/news/index.ts
+import { readFile } from 'fs/promises';
+import { join } from 'path';
+import { getConfigPath } from '../config';
+import type { INewsDataSource } from './interface';
+import type { NewsConfig } from './types';
+
+let cachedConfig: NewsConfig | null = null;
+
+async function loadConfig(configPath?: string): Promise<NewsConfig> {
+  if (cachedConfig) return cachedConfig;
+  
+  const path = configPath || join(process.cwd(), getConfigPath('news') + '.json');
+  const fileContent = await readFile(path, 'utf-8');
+  const config = JSON.parse(fileContent) as NewsConfig;
+  
+  // 验证逻辑...
+  validateConfig(config);
+  
+  cachedConfig = config;
+  return config;
+}
+
+class NewsDataSource implements INewsDataSource {
+  constructor(private configPath?: string) {}
+  
+  async getNewsConfig(): Promise<NewsConfig> {
+    return loadConfig(this.configPath);
+  }
+}
+
+export function getDefaultNewsDataSource(): INewsDataSource {
+  return new NewsDataSource();
+}
+
+export function createNewsDataSource(configPath?: string): INewsDataSource {
+  return new NewsDataSource(configPath);
+}
+```
+
+### 方式二：使用 BaseFileDataSource 基类（如 seo 模块）
+
+如果需要更复杂的缓存和文件修改检查，可以使用 `BaseFileDataSource` 基类：
 
 ```typescript
 // configSource/configs/news/file-source.ts
@@ -78,11 +125,11 @@ export class FileNewsDataSource extends BaseFileDataSource<NewsConfig> implement
   constructor(configPath?: string) {
     super({
       configPath,
-      getDefaultPath: () => getConfigPath('news'), // 或直接返回 'data/news-config'
+      getDefaultPath: () => getConfigPath('news'),
       validateConfig: (config: unknown): void => {
         // 验证逻辑
       },
-      useSync: false,
+      useSync: false, // 异步模式
     });
   }
 
@@ -92,34 +139,16 @@ export class FileNewsDataSource extends BaseFileDataSource<NewsConfig> implement
 }
 ```
 
-3. **在工厂函数中注册**：在对应的 `index.ts` 中注册新的数据源类型
+## 注意
 
-## 添加新的数据源类型（如 CMS、API）
-
-如需支持其他数据源类型（如 CMS、API、数据库等），可以：
-
-1. **实现接口**：创建新的数据源类，实现对应的接口（`ISeoDataSource` 或 `IPricingDataSource`）
-
-2. **修改工厂函数**：在对应的 `index.ts` 中的工厂函数中添加创建逻辑
-
-```typescript
-// configSource/configs/seo/index.ts
-export function createSeoDataSource(configPath?: string, options?: { type?: 'file' | 'cms' | 'api' }): ISeoDataSource {
-  const sourceType = options?.type || 'file';
-  
-  switch (sourceType) {
-    case 'file':
-      return new FileSeoDataSource(configPath);
-    case 'cms':
-      return new CmsSeoDataSource(options); // 新增 CMS 数据源
-    // ...
-  }
-}
-```
+- **Pricing 模块**：实现方式为直接在 `index.ts` 中实现异步数据获取逻辑，简洁明了
+- **SEO 模块**：使用 `BaseFileDataSource` 基类，支持更复杂的缓存和文件修改检查
+- **选择建议**：如果只需要简单的异步文件读取，推荐使用 Pricing 模块的方式；如果需要文件修改检查或同步模式，使用 SEO 模块的方式
 
 ## 环境变量
 
 ### SEO 配置
+- `NEXT_PUBLIC_SEO_DATA_SOURCE`: 数据源类型（`file` | `cms` | `api` | `database`），默认 `file`
 - `SEO_CONFIG_PATH` 或 `NEXT_PUBLIC_SEO_CONFIG_PATH`: 数据源路径，默认 `data/seo-config`
 
 ### 价格配置
@@ -127,8 +156,7 @@ export function createSeoDataSource(configPath?: string, options?: { type?: 'fil
 
 ## 设计模式
 
-- **工厂模式**：`createSeoDataSource` 和 `createPricingDataSource` 创建数据源实例（当前实现为文件数据源）
-- **策略模式**：不同的数据源实现（FileSeoDataSource、CmsSeoDataSource 等）可以互换使用（需实现接口）
+- **工厂模式**：`createSeoDataSource` 和 `createPricingDataSource` 创建数据源实例
 - **单例模式**：`getDefaultDataSource` 和 `getDefaultPricingDataSource` 提供默认单例实例
 
 ## 注意事项
@@ -137,6 +165,6 @@ export function createSeoDataSource(configPath?: string, options?: { type?: 'fil
 
 2. **路径配置**：数据源路径配置通过 `configSource/configs/config.ts` 统一管理，支持环境变量覆盖
 
-3. **通用基类**：`BaseFileDataSource` 基类提供了文件数据源的通用实现，大幅减少重复代码。添加新的配置类型时，只需继承基类并实现接口方法即可，无需重写文件读取逻辑
-
-4. **扩展性**：如需支持其他数据源类型（如 CMS、API），可以修改工厂函数添加相应的创建逻辑。当前实现为文件数据源，后续可按需扩展
+3. **两种实现方式**：
+   - **直接实现**（如 pricing）：在 `index.ts` 中直接实现异步逻辑，简洁明了
+   - **使用基类**（如 seo）：使用 `BaseFileDataSource` 基类，支持更复杂的缓存和文件修改检查
