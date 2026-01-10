@@ -1,11 +1,25 @@
 /**
  * Next.js 中间件
  * 用于处理多语言路由和重定向
+ * 
+ * 注意：此文件在 Edge Runtime 中运行，不能使用 Node.js 特定的模块
+ * 因此将必要的常量直接定义在此文件中，避免导入其他模块
  */
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { defaultLocale, supportedLocales, isSupportedLocale } from '@/i18n/config';
+
+// 支持的语言列表（在 Edge Runtime 中直接定义，避免导入）
+const supportedLocales = ['zh', 'en'] as const;
+type SupportedLocale = typeof supportedLocales[number];
+
+// 默认语言
+const defaultLocale: SupportedLocale = 'zh';
+
+// 检查语言是否支持
+function isSupportedLocale(locale: string): locale is SupportedLocale {
+  return supportedLocales.includes(locale as SupportedLocale);
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
