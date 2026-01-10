@@ -1,0 +1,6 @@
+# 1. 运行 lint-staged（只检查暂存的文件）
+# 如果没有匹配的文件，lint-staged 会跳过
+npx lint-staged || true
+
+# 2. 运行完整的工程检查（类型检查、代码检查、构建产物验证）
+pnpm pre-commit:check

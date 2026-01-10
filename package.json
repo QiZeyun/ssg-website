@@ -13,7 +13,9 @@
     "export": "next build && next export",
     "validate": "tsx scripts/validate-build.ts",
     "preview": "tsx scripts/preview-build.ts",
-    "build:preview": "pnpm build && pnpm validate && pnpm preview"
+    "build:preview": "pnpm build && pnpm validate && pnpm preview",
+    "pre-commit:check": "tsx scripts/pre-commit-check.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "next": "^14.2.0",
@@ -27,6 +29,8 @@
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "postcss": "^8.4.33",
     "serve": "^14.2.5",
     "tailwindcss": "^3.4.1",
