@@ -2,6 +2,8 @@
  * 多语言支持类型定义
  */
 
+import type { TranslationDictionary, TranslationKey } from '@/data/translations';
+
 /**
  * 支持的语言
  */
@@ -22,12 +24,9 @@ export interface LocaleConfig {
 }
 
 /**
- * 翻译字典
- * 支持嵌套的键值对，例如 { nav: { home: "首页" } }
+ * 翻译键类型（重新导出）
  */
-export type TranslationDictionary = {
-  [key: string]: string | TranslationDictionary;
-};
+export type { TranslationKey, TranslationDictionary } from '@/data/translations';
 
 /**
  * 多语言翻译数据
