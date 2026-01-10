@@ -1,7 +1,10 @@
 /**
  * 产品价格配置数据源接口
  * 
- * 这个接口定义了从外部系统（如 CMS、API、本地文件等）获取产品价格配置的契约
+ * 这个接口定义了从数据源获取产品价格配置的契约
+ * 
+ * 注意：调用方不应该感知数据源的具体实现（如文件系统、CMS、API、数据库等）
+ * 所有数据获取都应该通过此接口的方法进行
  */
 
 import type { PricingConfig, LocalizedPricingConfig } from './types';
@@ -10,11 +13,13 @@ import type { PricingConfig, LocalizedPricingConfig } from './types';
  * 产品价格配置数据源接口
  * 
  * 实现此接口可以支持从不同的数据源获取产品价格配置：
- * - 本地文件（FilePricingDataSource）
+ * - 本地数据源（FilePricingDataSource）
  * - CMS 系统（CmsPricingDataSource）
  * - REST API（ApiPricingDataSource）
  * - 数据库（DatabasePricingDataSource）
  * 等等
+ * 
+ * 所有实现都应该封装数据获取的具体细节，调用方只需调用接口方法即可
  */
 export interface IPricingDataSource {
   /**

@@ -26,6 +26,8 @@ export function createPricingDataSource(
 
   switch (sourceType) {
     case 'file':
+      // 只传递 configPath（如果提供），路径的默认值由 FilePricingDataSource 内部处理
+      // 调用方不需要感知数据的具体存储路径和格式
       return new FilePricingDataSource(options?.configPath as string | undefined);
 
     case 'cms':

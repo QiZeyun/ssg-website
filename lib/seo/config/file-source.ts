@@ -1,12 +1,15 @@
 /**
- * 本地文件数据源实现
+ * 文件数据源实现
  * 
- * 从本地 JSON 文件读取 SEO 配置
+ * 从本地数据源读取 SEO 配置
  * 这是一个简单的实现，适合开发和静态网站场景
+ * 
+ * 注意：此实现封装了数据获取的具体细节，调用方不应该感知数据的具体存储格式
  */
 
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { getSeoConfigPath } from '@/lib/data/config';
 import type { ISeoDataSource } from './interface';
 import type { SeoConfig, PageSeoConfig, GlobalSeoConfig, SitemapPageConfig, RobotsConfig } from './types';
 
@@ -16,14 +19,29 @@ export class FileSeoDataSource implements ISeoDataSource {
 
   /**
    * 构造函数
-   * @param configPath SEO 配置文件的路径，默认为项目根目录下的 data/seo-config.json
+   * @param configPath 配置数据源的路径，如果不提供则使用默认路径
    */
   constructor(configPath?: string) {
-    this.configPath = configPath || join(process.cwd(), 'data', 'seo-config.json');
+    // 如果提供了完整路径，直接使用；否则从配置模块获取默认路径
+    if (configPath) {
+      this.configPath = configPath;
+    } else {
+      const defaultPath = getSeoConfigPath();
+      // 支持相对路径和绝对路径
+      this.configPath = defaultPath.startsWith('/') 
+        ? defaultPath 
+        : join(process.cwd(), defaultPath);
+      // 添加文件扩展名（这是实现细节，不应暴露给调用方）
+      // 如果路径已经包含扩展名，则不再添加
+      if (!this.configPath.match(/\.[a-z0-9]+$/i)) {
+        this.configPath = `${this.configPath}.json`;
+      }
+    }
   }
 
   /**
-   * 加载配置文件
+   * 从数据源加载配置
+   * 此方法封装了数据获取的具体实现，调用方不应该感知数据的具体存储方式
    */
   private async loadConfig(): Promise<SeoConfig> {
     // 如果有缓存，直接返回
@@ -32,6 +50,7 @@ export class FileSeoDataSource implements ISeoDataSource {
     }
 
     try {
+      // 从数据源读取数据（具体实现细节被封装在此处）
       const fileContent = await readFile(this.configPath, 'utf-8');
       const config = JSON.parse(fileContent) as SeoConfig;
       
@@ -50,11 +69,11 @@ export class FileSeoDataSource implements ISeoDataSource {
     } catch (error) {
       if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
         throw new Error(
-          `SEO 配置文件未找到: ${this.configPath}. 请确保配置文件存在。`
+          `SEO 配置数据未找到: ${this.configPath}. 请确保数据源存在。`
         );
       }
       throw new Error(
-        `加载 SEO 配置文件失败: ${error instanceof Error ? error.message : String(error)}`
+        `加载 SEO 配置失败: ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }

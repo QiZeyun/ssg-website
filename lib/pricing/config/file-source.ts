@@ -1,10 +1,13 @@
 /**
  * 文件数据源实现
- * 从本地 JSON 文件读取产品价格配置
+ * 从本地数据源读取产品价格配置
+ * 
+ * 注意：此实现封装了数据获取的具体细节，调用方不应该感知数据的具体存储格式
  */
 
-import { readFileSync } from 'fs';
+import { readFileSync, statSync } from 'fs';
 import { join } from 'path';
+import { getPricingConfigPath } from '@/lib/data/config';
 import type { PricingConfig, LocalizedPricingConfig } from './types';
 import type { IPricingDataSource } from './interface';
 import { defaultLocale } from '@/lib/i18n/config';
@@ -15,22 +18,38 @@ export class FilePricingDataSource implements IPricingDataSource {
   private lastModified: number = 0;
 
   constructor(configPath?: string) {
-    this.configPath = configPath || join(process.cwd(), 'data', 'pricing-config.json');
+    // 如果提供了完整路径，直接使用；否则从配置模块获取默认路径
+    if (configPath) {
+      this.configPath = configPath;
+    } else {
+      const defaultPath = getPricingConfigPath();
+      // 支持相对路径和绝对路径
+      this.configPath = defaultPath.startsWith('/') 
+        ? defaultPath 
+        : join(process.cwd(), defaultPath);
+      // 添加文件扩展名（这是实现细节，不应暴露给调用方）
+      // 如果路径已经包含扩展名，则不再添加
+      if (!this.configPath.match(/\.[a-z0-9]+$/i)) {
+        this.configPath = `${this.configPath}.json`;
+      }
+    }
   }
 
   /**
-   * 加载配置文件
+   * 从数据源加载配置
+   * 此方法封装了数据获取的具体实现，调用方不应该感知数据的具体存储方式
    */
   private loadConfig(): LocalizedPricingConfig {
     try {
-      const stats = require('fs').statSync(this.configPath);
+      const stats = statSync(this.configPath);
       const currentModified = stats.mtimeMs;
 
-      // 如果文件未修改且缓存存在，直接返回缓存
+      // 如果数据源未修改且缓存存在，直接返回缓存
       if (this.cache && currentModified === this.lastModified) {
         return this.cache;
       }
 
+      // 从数据源读取数据（具体实现细节被封装在此处）
       const fileContent = readFileSync(this.configPath, 'utf-8');
       const config = JSON.parse(fileContent) as LocalizedPricingConfig;
 
