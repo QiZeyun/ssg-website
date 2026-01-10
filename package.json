@@ -11,8 +11,8 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "export": "next build && next export",
-    "validate": "./scripts/validate-build.sh",
-    "preview": "./scripts/preview-build.sh",
+    "validate": "tsx scripts/validate-build.ts",
+    "preview": "tsx scripts/preview-build.ts",
     "build:preview": "pnpm build && pnpm validate && pnpm preview"
   },
   "dependencies": {
@@ -28,7 +28,9 @@
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.2.0",
     "postcss": "^8.4.33",
+    "serve": "^14.2.5",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.3.3"
   }
 }
