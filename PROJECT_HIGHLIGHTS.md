@@ -25,8 +25,8 @@
 ```typescript
 // 抽象接口，未来可扩展
 interface ISeoDataSource {
-  getGlobalSeoConfig(): Promise<GlobalSeoConfig>;
-  getPageSeoConfig(path: string): Promise<PageSeoConfig | null>;
+  getGlobalConfig(): Promise<GlobalSeoConfig>;
+  getPageConfig(path: string): Promise<PageSeoConfig | null>;
   getSitemapConfig(): Promise<SitemapConfig>;
   getRobotsConfig(): Promise<RobotsConfig>;
 }
@@ -443,7 +443,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // 全局 Metadata（在 layout.tsx 中）
 export async function generateMetadata(): Promise<Metadata> {
-  const globalConfig = await getGlobalSeoConfig();
+  const globalConfig = await getGlobalConfig();
   return {
     title: {
       default: globalConfig.siteName,
@@ -630,8 +630,8 @@ export default async function robots() {
 ```typescript
 // 抽象接口
 interface ISeoDataSource {
-  getGlobalSeoConfig(): Promise<GlobalSeoConfig>;
-  getPageSeoConfig(path: string): Promise<PageSeoConfig | null>;
+  getGlobalConfig(): Promise<GlobalSeoConfig>;
+  getPageConfig(path: string): Promise<PageSeoConfig | null>;
   getSitemapConfig(): Promise<SitemapConfig>;
   getRobotsConfig(): Promise<RobotsConfig>;
 }

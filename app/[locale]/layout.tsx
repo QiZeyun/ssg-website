@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
-import { getGlobalSeoConfig } from '@/configSource/seo';
+import { getGlobalConfig } from '@/configSource/configs/seo';
 import { getLocaleConfig, defaultLocale, isSupportedLocale, type SupportedLocale } from '@/i18n';
 import { NavigationWrapper } from '@/components/NavigationWrapper';
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: LocaleLayoutProps): Promise<M
     return {};
   }
 
-  const globalConfig = await getGlobalSeoConfig();
+  const globalConfig = await getGlobalConfig();
   const baseUrl = globalConfig.siteUrl;
   const localeConfig = getLocaleConfig(locale);
   

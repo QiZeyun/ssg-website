@@ -89,21 +89,23 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 ```
 
+注意：`generateMetadataFromPath` 仍在 `configSource/seo` 模块中，因为它是对配置数据获取和 Metadata 生成的封装。
+
 ### 获取全局配置
 
 ```typescript
-import { getGlobalSeoConfig } from '@/configSource/seo';
+import { getGlobalConfig } from '@/configSource/configs/seo';
 
-const globalConfig = await getGlobalSeoConfig();
+const globalConfig = await getGlobalConfig();
 console.log(globalConfig.siteName);
 ```
 
 ### 获取页面配置
 
 ```typescript
-import { getPageSeoConfig } from '@/configSource/seo';
+import { getPageConfig } from '@/configSource/configs/seo';
 
-const pageConfig = await getPageSeoConfig('/about');
+const pageConfig = await getPageConfig('/about');
 if (pageConfig) {
   console.log(pageConfig.title);
 }
@@ -111,7 +113,8 @@ if (pageConfig) {
 
 ## 注意事项
 
-1. 配置文件路径默认是 `data/seo-config.json`，可以通过 `FileSeoDataSource` 构造函数自定义
-2. 配置文件会在首次加载时缓存，修改后需要重启开发服务器才能生效
-3. 页面路径应该以 `/` 开头，根路径使用 `/` 而不是空字符串
-4. 所有 URL（如 `siteUrl`、`sitemap`）可以通过环境变量在运行时动态覆盖
+1. 配置文件直接通过 `import` 加载，由构建工具在构建时处理
+2. 页面路径应该以 `/` 开头，根路径使用 `/` 而不是空字符串
+3. `siteUrl` 可以通过环境变量 `NEXT_PUBLIC_SITE_URL` 在运行时动态覆盖
+4. 所有配置数据获取函数都在 `@/configSource/configs/seo` 模块中
+5. Metadata 生成工具函数在 `@/configSource/seo` 模块中
