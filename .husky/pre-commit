@@ -1,8 +1,9 @@
 # Pre-commit hook: 在提交前运行工程检查
 
 # 1. 运行 lint-staged（只检查暂存的文件并自动修复）
-# lint-staged 会自动检查暂存的 .ts 和 .tsx 文件，如果没有匹配文件则静默跳过
-npx lint-staged 2>/dev/null || true
+# lint-staged 会自动检查暂存的 .ts 和 .tsx 文件
+# 如果没有匹配的文件，lint-staged 会退出，这里捕获退出码避免中断
+npx lint-staged || true
 
 # 2. 运行完整的工程检查
 # - TypeScript 类型检查
