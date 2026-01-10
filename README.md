@@ -81,11 +81,13 @@ pnpm build:preview
 ssg-website/
 ├── app/                    # Next.js App Router 页面
 │   ├── [locale]/          # 多语言路由
-│   │   ├── about/         # 关于页面
-│   │   ├── contact/       # 联系页面
-│   │   ├── pricing/       # 价格页面
+│   │   ├── [...slug]/     # 动态路由（处理 Markdown 内容页面，如 about、blog 等）
+│   │   ├── contact/       # 联系页面（固定路由）
+│   │   ├── pricing/       # 价格页面（固定路由）
 │   │   ├── layout.tsx     # 布局组件
 │   │   └── page.tsx       # 主页
+│   ├── page.tsx           # 根路径页面（处理重定向）
+│   ├── page-client.tsx    # 根路径客户端组件
 │   ├── robots.ts          # Robots.txt 生成
 │   └── sitemap.ts         # Sitemap 生成
 ├── components/            # React 组件
@@ -98,6 +100,9 @@ ssg-website/
 │   │   ├── seo/           # SEO 配置
 │   │   └── pricing/       # 价格配置
 │   ├── data/              # 数据文件
+│   │   ├── content/       # Markdown 内容文件
+│   │   │   ├── zh/        # 中文内容
+│   │   │   └── en/        # 英文内容
 │   │   ├── seo-config.json    # SEO 配置文件
 │   │   └── pricing-config.json # 价格配置文件
 │   ├── generateMetadata.ts # SEO Metadata 生成工具
@@ -191,29 +196,39 @@ export async function generateMetadata(): Promise<Metadata> {
 
 **使用示例**：
 
+**固定路由页面（如联系页、价格页）**：
+
 ```typescript
-// app/[locale]/about/page.tsx
+// app/[locale]/contact/page.tsx
 import type { Metadata } from 'next';
 import { generateMetadataFromPath } from '@/dataService';
 
-interface AboutPageProps {
+interface ContactPageProps {
   params: Promise<{ locale: string }>;
 }
 
 /**
- * 生成关于页面的 SEO Metadata
+ * 生成联系页面的 SEO Metadata
  * 
  * ⚠️ 重要：这是 Next.js App Router 的特殊导出函数，用于生成页面的 <head> 标签内容。
  * 删除此方法会导致页面缺少 SEO 元数据，影响搜索引擎排名和社交媒体分享效果。
  */
-export async function generateMetadata({ params }: AboutPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ContactPageProps): Promise<Metadata> {
   const { locale } = await params;
-  return generateMetadataFromPath(`/${locale}/about`);
+  return generateMetadataFromPath(`/${locale}/contact`);
 }
 
-export default async function AboutPage({ params }: AboutPageProps) {
+export default async function ContactPage({ params }: ContactPageProps) {
   // 页面内容...
 }
+```
+
+**动态路由页面（从 Markdown 文件生成）**：
+
+```typescript
+// app/[locale]/[...slug]/page.tsx
+// 此路由自动处理所有 Markdown 内容页面，如 /zh/about、/zh/blog/post-1 等
+// 内容文件位于 dataService/data/content/[locale]/ 目录下
 ```
 
 **生成的 HTML 效果**：
@@ -269,20 +284,21 @@ export async function generateMetadata({ params }: LocaleLayoutProps): Promise<M
 **错误示例**：
 ```typescript
 // ❌ 缺少 generateMetadata，会触发 ESLint 错误
-export default async function AboutPage() {
-  return <div>About Page</div>;
+export default async function ContactPage() {
+  return <div>Contact Page</div>;
 }
 ```
 
 **正确示例**：
 ```typescript
 // ✅ 包含 generateMetadata，通过 ESLint 检查
-export async function generateMetadata({ params }: AboutPageProps): Promise<Metadata> {
-  return generateMetadataFromPath(`/${params.locale}/about`);
+export async function generateMetadata({ params }: ContactPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return generateMetadataFromPath(`/${locale}/contact`);
 }
 
-export default async function AboutPage() {
-  return <div>About Page</div>;
+export default async function ContactPage({ params }: ContactPageProps) {
+  return <div>Contact Page</div>;
 }
 ```
 

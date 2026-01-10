@@ -2,10 +2,7 @@
 title: "关于我们"
 description: "了解我们的公司、使命和价值观"
 date: "2024-01-10"
-category: "page"
 slug: "about"
-published: true
-order: 1
 ---
 
 ## 关于我们

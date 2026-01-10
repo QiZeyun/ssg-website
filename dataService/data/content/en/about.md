@@ -2,10 +2,7 @@
 title: "About Us"
 description: "Learn about our company, mission, and values"
 date: "2024-01-10"
-category: "page"
 slug: "about"
-published: true
-order: 1
 ---
 
 ## About Us

@@ -101,7 +101,7 @@ cat .vercel/project.json
 
 #### 部署后网站异常
 - ✅ 检查环境变量是否正确配置
-- ✅ 确认 SEO 配置文件 `data/seo-config.json` 存在
+- ✅ 确认 SEO 配置文件 `dataService/data/seo-config.json` 存在
 - ✅ 验证 `NEXT_PUBLIC_SITE_URL` 是否设置正确
 
 ### 手动部署（如果需要）

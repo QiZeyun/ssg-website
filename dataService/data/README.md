@@ -725,15 +725,20 @@ image: "/og-product-2024.jpg"
    - 自动扫描 `content` 目录下的所有 `.md` 文件
    - 解析文件内容（Frontmatter + Markdown 正文）
    - 将 Markdown 转换为 HTML
-   - 生成静态页面
+   - 通过动态路由 `[...slug]` 生成静态页面
 
 2. **自动生成路由**：每个 Markdown 文件会自动生成对应的网页地址
    - 文件：`content/zh/about.md` → 网页：`/zh/about`
    - 文件：`content/zh/blog/post-1.md` → 网页：`/zh/blog/post-1`
+   - 所有 Markdown 内容页面都通过 `app/[locale]/[...slug]/page.tsx` 动态路由处理
 
-3. **自动 SEO 处理**：系统会自动从 Frontmatter 中提取 SEO 信息，生成搜索引擎需要的元数据
+3. **保留路由**：以下路由是固定路由，不会被 Markdown 文件处理，请不要在 `content` 目录下创建同名的 Markdown 文件：
+   - `pricing` - 价格页面（由固定路由 `app/[locale]/pricing/page.tsx` 处理）
+   - `contact` - 联系页面（由固定路由 `app/[locale]/contact/page.tsx` 处理）
 
-4. **自动更新 Sitemap**：已发布的页面会自动添加到 `sitemap.xml`，方便搜索引擎收录
+4. **自动 SEO 处理**：系统会自动从 Frontmatter 中提取 SEO 信息，生成搜索引擎需要的元数据
+
+5. **自动更新 Sitemap**：已发布的页面会自动添加到 `sitemap.xml`，方便搜索引擎收录
 
 ### 1.8 常见问题
 

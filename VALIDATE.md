@@ -35,12 +35,22 @@ ls -lh out/_next/static/
 #### ✅ 必须存在的文件
 
 ```bash
-# 主页
+# 根路径（重定向）
 out/index.html
 
-# 页面路由
-out/about/index.html
-out/contact/index.html
+# 主页（多语言）
+out/zh/index.html
+out/en/index.html
+
+# 动态内容页面（从 Markdown 生成，如 about）
+out/zh/about/index.html
+out/en/about/index.html
+
+# 固定路由页面
+out/zh/contact/index.html
+out/zh/pricing/index.html
+out/en/contact/index.html
+out/en/pricing/index.html
 
 # SEO 文件
 out/robots.txt
@@ -57,9 +67,11 @@ cat out/sitemap.xml
 ```
 
 应该包含所有页面的 URL，例如：
-- `/`
-- `/about/`
-- `/contact/`
+- `/zh/`（中文主页）
+- `/en/`（英文主页）
+- `/zh/about/`（从 Markdown 生成）
+- `/zh/contact/`（固定路由）
+- `/zh/pricing/`（固定路由）
 
 #### ✅ 验证 robots.txt
 
@@ -118,9 +130,12 @@ serve -p 3000
 
 #### 📄 文件结构验证
 
-- [ ] `out/index.html` 存在
-- [ ] `out/about/index.html` 存在
-- [ ] `out/contact/index.html` 存在
+- [ ] `out/index.html` 存在（根路径重定向）
+- [ ] `out/zh/index.html` 存在（中文主页）
+- [ ] `out/en/index.html` 存在（英文主页，如果支持）
+- [ ] `out/zh/about/index.html` 存在（从 Markdown 生成的内容页面）
+- [ ] `out/zh/contact/index.html` 存在（固定路由页面）
+- [ ] `out/zh/pricing/index.html` 存在（固定路由页面）
 - [ ] `out/robots.txt` 存在
 - [ ] `out/sitemap.xml` 存在
 - [ ] `out/_next/static/` 目录存在且包含资源
