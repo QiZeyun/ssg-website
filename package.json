@@ -10,7 +10,10 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "export": "next build && next export"
+    "export": "next build && next export",
+    "validate": "./scripts/validate-build.sh",
+    "preview": "./scripts/preview-build.sh",
+    "build:preview": "pnpm build && pnpm validate && pnpm preview"
   },
   "dependencies": {
     "next": "^14.2.0",
