@@ -2,7 +2,7 @@
  * 多语言支持类型定义
  */
 
-import type { TranslationDictionary, TranslationKey } from '@/data/translations';
+import type { TranslationDictionary, TranslationKey } from '@/lib/translations';
 
 /**
  * 支持的语言
@@ -26,7 +26,7 @@ export interface LocaleConfig {
 /**
  * 翻译键类型（重新导出）
  */
-export type { TranslationKey, TranslationDictionary } from '@/data/translations';
+export type { TranslationKey, TranslationDictionary } from '@/lib/translations';
 
 /**
  * 多语言翻译数据

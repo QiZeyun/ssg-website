@@ -1,5 +1,12 @@
 # 翻译文件说明
 
+## 目录位置
+
+翻译文件位于 `lib/translations/` 目录，属于工程代码（而非数据源）。这是因为：
+- 翻译文件包含 TypeScript 类型约束，是工程代码的一部分
+- `data/` 目录应该是一个能够随时替换的数据源（如从 CMS 获取的 JSON 文件）
+- 翻译文件的结构和类型定义需要与代码一起维护
+
 ## 文件结构
 
 翻译文件按语言拆分成独立的 TypeScript 文件：
@@ -48,7 +55,7 @@
    };
    ```
 
-2. 创建 `data/translations/ja.ts`：
+2. 创建 `lib/translations/ja.ts`：
    ```typescript
    import type { TranslationDictionary } from './index';
    
@@ -63,7 +70,7 @@
    };
    ```
 
-3. 在 `data/translations/index.ts` 中导出：
+3. 在 `lib/translations/index.ts` 中导出：
    ```typescript
    import { ja } from './ja';
    

@@ -5,12 +5,12 @@
 
 import { getTranslations } from './translations';
 import type { TranslationDictionary, Translations, SupportedLocale } from './types';
-import type { TranslationKey } from '@/data/translations';
+import type { TranslationKey } from '@/lib/translations';
 import { defaultLocale, isSupportedLocale } from './config';
 
 // 重新导出类型和配置
 export type { SupportedLocale, TranslationDictionary, Translations } from './types';
-export type { TranslationKey } from '@/data/translations';
+export type { TranslationKey } from '@/lib/translations';
 export { isSupportedLocale, defaultLocale, supportedLocales, localeConfigs, getLocaleConfig } from './config';
 export { getTranslations } from './translations';
 
