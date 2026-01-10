@@ -19,7 +19,7 @@
 #### ✅ 可扩展的 SEO 配置系统
 - **抽象数据源接口**：使用 `ISeoDataSource` 接口，支持多种数据源
 - **当前实现**：本地 JSON 文件（`FileSeoDataSource`）
-- **未来扩展**：可轻松接入 CMS、API、数据库等数据源
+- **未来扩展**：可轻松接入 CMS、API、数据库等数据源（需在工厂函数中添加创建逻辑）
 - **设计模式**：工厂模式（`createSeoDataSource`）+ 策略模式（不同的数据源实现）
 
 ```typescript

@@ -42,11 +42,8 @@ const dataSource = getDefaultDataSource();
 const globalConfig = await dataSource.getGlobalConfig();
 const pageConfig = await dataSource.getPageConfig('/about');
 
-// 或创建自定义数据源
-const customDataSource = createSeoDataSource({
-  type: 'file',
-  configPath: '/custom/path/to/config'
-});
+// 或创建自定义数据源（指定配置文件路径）
+const customDataSource = createSeoDataSource('/custom/path/to/config');
 ```
 
 ### 价格配置数据源
@@ -58,11 +55,8 @@ import { getDefaultPricingDataSource, createPricingDataSource } from '@/configSo
 const dataSource = getDefaultPricingDataSource();
 const pricingConfig = await dataSource.getPricingConfig('zh');
 
-// 或创建自定义数据源
-const customDataSource = createPricingDataSource({
-  type: 'file',
-  configPath: '/custom/path/to/config'
-});
+// 或创建自定义数据源（指定配置文件路径）
+const customDataSource = createPricingDataSource('/custom/path/to/config');
 ```
 
 ## 添加新的配置类型
@@ -102,20 +96,20 @@ export class FileNewsDataSource extends BaseFileDataSource<NewsConfig> implement
 
 ## 添加新的数据源类型（如 CMS、API）
 
-要添加新的数据源类型（如 CMS、API），需要：
+如需支持其他数据源类型（如 CMS、API、数据库等），可以：
 
 1. **实现接口**：创建新的数据源类，实现对应的接口（`ISeoDataSource` 或 `IPricingDataSource`）
 
-2. **注册到工厂函数**：在对应的 `index.ts` 中的工厂函数中添加新的 case
+2. **修改工厂函数**：在对应的 `index.ts` 中的工厂函数中添加创建逻辑
 
 ```typescript
 // configSource/configs/seo/index.ts
-export function createSeoDataSource(options?: {...}): ISeoDataSource {
+export function createSeoDataSource(configPath?: string, options?: { type?: 'file' | 'cms' | 'api' }): ISeoDataSource {
   const sourceType = options?.type || 'file';
   
   switch (sourceType) {
     case 'file':
-      return new FileSeoDataSource(options?.configPath);
+      return new FileSeoDataSource(configPath);
     case 'cms':
       return new CmsSeoDataSource(options); // 新增 CMS 数据源
     // ...
@@ -126,17 +120,15 @@ export function createSeoDataSource(options?: {...}): ISeoDataSource {
 ## 环境变量
 
 ### SEO 配置
-- `NEXT_PUBLIC_SEO_DATA_SOURCE`: 数据源类型（`file` | `cms` | `api` | `database`），默认 `file`
 - `SEO_CONFIG_PATH` 或 `NEXT_PUBLIC_SEO_CONFIG_PATH`: 数据源路径，默认 `data/seo-config`
 
 ### 价格配置
-- `NEXT_PUBLIC_PRICING_DATA_SOURCE`: 数据源类型（`file` | `cms` | `api` | `database`），默认 `file`
 - `PRICING_CONFIG_PATH` 或 `NEXT_PUBLIC_PRICING_CONFIG_PATH`: 数据源路径，默认 `data/pricing-config`
 
 ## 设计模式
 
-- **工厂模式**：`createSeoDataSource` 和 `createPricingDataSource` 根据配置创建相应的数据源实例
-- **策略模式**：不同的数据源实现（FileSeoDataSource、CmsSeoDataSource 等）可以互换使用
+- **工厂模式**：`createSeoDataSource` 和 `createPricingDataSource` 创建数据源实例（当前实现为文件数据源）
+- **策略模式**：不同的数据源实现（FileSeoDataSource、CmsSeoDataSource 等）可以互换使用（需实现接口）
 - **单例模式**：`getDefaultDataSource` 和 `getDefaultPricingDataSource` 提供默认单例实例
 
 ## 注意事项
@@ -147,4 +139,4 @@ export function createSeoDataSource(options?: {...}): ISeoDataSource {
 
 3. **通用基类**：`BaseFileDataSource` 基类提供了文件数据源的通用实现，大幅减少重复代码。添加新的配置类型时，只需继承基类并实现接口方法即可，无需重写文件读取逻辑
 
-3. **扩展性**：添加新的数据源类型时，不需要修改调用方代码，只需要实现接口并在工厂函数中注册即可
+4. **扩展性**：如需支持其他数据源类型（如 CMS、API），可以修改工厂函数添加相应的创建逻辑。当前实现为文件数据源，后续可按需扩展

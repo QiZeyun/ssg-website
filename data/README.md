@@ -67,14 +67,22 @@
 
 要添加新的数据源（如 CMS、API、数据库），需要：
 
-1. 实现 `ISeoDataSource` 接口（位于 `lib/seo/config/interface.ts`）
-2. 在 `lib/seo/config/index.ts` 的 `createSeoDataSource` 函数中添加相应的 case
+1. 实现 `ISeoDataSource` 接口（位于 `configSource/configs/seo/interface.ts`）
+2. 在 `configSource/configs/seo/index.ts` 的 `createSeoDataSource` 函数中添加相应的创建逻辑
 
 示例：
 
 ```typescript
-case 'cms':
-  return new CmsSeoDataSource(options);
+export function createSeoDataSource(configPath?: string, options?: { type?: 'file' | 'cms' }): ISeoDataSource {
+  const sourceType = options?.type || 'file';
+  
+  switch (sourceType) {
+    case 'file':
+      return new FileSeoDataSource(configPath);
+    case 'cms':
+      return new CmsSeoDataSource(options); // 新增 CMS 数据源
+  }
+}
 ```
 
 ## 使用示例
