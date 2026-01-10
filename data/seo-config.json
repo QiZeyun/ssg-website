@@ -1,0 +1,114 @@
+{
+  "global": {
+    "siteUrl": "https://example.com",
+    "siteName": "Your Company Name",
+    "titleTemplate": "%s | Your Company Name",
+    "defaultDescription": "Your company description for SEO and social sharing",
+    "defaultKeywords": ["website", "company", "business"],
+    "defaultOgImage": "/og-image.jpg",
+    "authors": [
+      {
+        "name": "Your Company Name"
+      }
+    ],
+    "creator": "Your Company Name",
+    "publisher": "Your Company Name",
+    "openGraph": {
+      "type": "website",
+      "locale": "en_US",
+      "siteName": "Your Company Name",
+      "images": [
+        {
+          "url": "/og-image.jpg",
+          "width": 1200,
+          "height": 630,
+          "alt": "Your Company Name"
+        }
+      ]
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "creator": "@yourcompany"
+    },
+    "verification": {
+      "google": "",
+      "yandex": "",
+      "yahoo": ""
+    },
+    "formatDetection": {
+      "email": false,
+      "address": false,
+      "telephone": false
+    }
+  },
+  "pages": [
+    {
+      "path": "/",
+      "title": "Home",
+      "description": "Welcome to our website. Discover our products and services.",
+      "keywords": ["home", "welcome", "products", "services"],
+      "ogImage": "/og-home.jpg",
+      "noIndex": false,
+      "canonical": "/",
+      "openGraph": {
+        "title": "Home | Your Company Name",
+        "description": "Welcome to our website. Discover our products and services."
+      }
+    },
+    {
+      "path": "/about",
+      "title": "About Us",
+      "description": "Learn more about our company, mission, and values.",
+      "keywords": ["about", "company", "mission", "values"],
+      "ogImage": "/og-about.jpg",
+      "noIndex": false,
+      "canonical": "/about",
+      "openGraph": {
+        "title": "About Us | Your Company Name",
+        "description": "Learn more about our company, mission, and values."
+      }
+    },
+    {
+      "path": "/contact",
+      "title": "Contact Us",
+      "description": "Get in touch with us. We would love to hear from you.",
+      "keywords": ["contact", "get in touch", "email", "phone"],
+      "ogImage": "/og-contact.jpg",
+      "noIndex": false,
+      "canonical": "/contact",
+      "openGraph": {
+        "title": "Contact Us | Your Company Name",
+        "description": "Get in touch with us. We would love to hear from you."
+      }
+    }
+  ],
+  "sitemap": {
+    "pages": [
+      {
+        "path": "/",
+        "changeFrequency": "daily",
+        "priority": 1.0
+      },
+      {
+        "path": "/about",
+        "changeFrequency": "weekly",
+        "priority": 0.8
+      },
+      {
+        "path": "/contact",
+        "changeFrequency": "weekly",
+        "priority": 0.8
+      }
+    ]
+  },
+  "robots": {
+    "rules": [
+      {
+        "userAgent": "*",
+        "allow": "/",
+        "disallow": ["/api/", "/admin/"]
+      }
+    ],
+    "sitemap": "https://example.com/sitemap.xml"
+  }
+}
