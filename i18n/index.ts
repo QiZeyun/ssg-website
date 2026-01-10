@@ -11,7 +11,7 @@ import { defaultLocale, isSupportedLocale } from './config';
 // 重新导出类型和配置
 export type { SupportedLocale, TranslationDictionary, Translations } from './types';
 export type { TranslationKey } from '@/translations';
-export { isSupportedLocale, defaultLocale, supportedLocales, localeConfigs, getLocaleConfig } from './config';
+export { isSupportedLocale, defaultLocale, supportedLocales, localeConfigs, getLocaleConfig, getDateLocale } from './config';
 export { getTranslations } from './translations';
 
 /**

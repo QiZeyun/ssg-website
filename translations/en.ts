@@ -18,6 +18,8 @@ export const en: TranslationDictionary = {
     getStarted: 'Get Started',
     contactUs: 'Contact Us',
     language: 'Language',
+    author: 'Author',
+    lastUpdated: 'Last Updated',
   },
   home: {
     title: 'Welcome to Your Company',
@@ -34,10 +36,6 @@ export const en: TranslationDictionary = {
       title: 'Feature 3',
       description: 'Description of your third feature or service.',
     },
-  },
-  about: {
-    title: 'About Us',
-    subtitle: 'Learn more about our company, our mission, and our values.',
   },
   contact: {
     title: 'Contact Us',

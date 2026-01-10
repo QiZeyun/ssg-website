@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
 import { getGlobalConfig } from '@/dataService';
-import { getLocaleConfig, defaultLocale, isSupportedLocale, type SupportedLocale } from '@/i18n';
+import { getLocaleConfig, defaultLocale, isSupportedLocale, supportedLocales, type SupportedLocale } from '@/i18n';
 import { NavigationWrapper } from '@/components/NavigationWrapper';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -14,10 +14,7 @@ interface LocaleLayoutProps {
 }
 
 export function generateStaticParams() {
-  return [
-    { locale: 'zh' },
-    { locale: 'en' },
-  ];
+  return supportedLocales.map((locale) => ({ locale }));
 }
 
 /**
@@ -36,6 +33,22 @@ export async function generateMetadata({ params }: LocaleLayoutProps): Promise<M
   const baseUrl = globalConfig.siteUrl;
   const localeConfig = getLocaleConfig(locale);
   
+  // 将 locale 代码转换为 OpenGraph locale 格式
+  // 映射规则：zh -> zh_CN, en -> en_US, 其他保持原样
+  const ogLocaleMap: Record<SupportedLocale, string> = {
+    zh: 'zh_CN',
+    en: 'en_US',
+  };
+  const ogLocale = ogLocaleMap[localeConfig.code] || localeConfig.code;
+  
+  // 构建多语言替代链接
+  const alternatesLanguages: Record<string, string> = {
+    'x-default': `${baseUrl}/${defaultLocale}`,
+  };
+  for (const loc of supportedLocales) {
+    alternatesLanguages[loc] = `${baseUrl}/${loc}`;
+  }
+  
   return {
     metadataBase: new URL(baseUrl),
     title: {
@@ -50,7 +63,7 @@ export async function generateMetadata({ params }: LocaleLayoutProps): Promise<M
     formatDetection: globalConfig.formatDetection,
     openGraph: {
       ...globalConfig.openGraph,
-      locale: localeConfig.code === 'zh' ? 'zh_CN' : 'en_US',
+      locale: ogLocale,
       url: `/${locale}`,
       title: globalConfig.siteName,
       description: globalConfig.defaultDescription,
@@ -78,11 +91,7 @@ export async function generateMetadata({ params }: LocaleLayoutProps): Promise<M
       yahoo: process.env.NEXT_PUBLIC_YAHOO_VERIFICATION || globalConfig.verification?.yahoo,
     },
     alternates: {
-      languages: {
-        'zh': `/${baseUrl}/zh`,
-        'en': `/${baseUrl}/en`,
-        'x-default': `/${baseUrl}/${defaultLocale}`,
-      },
+      languages: alternatesLanguages,
     },
   };
 }

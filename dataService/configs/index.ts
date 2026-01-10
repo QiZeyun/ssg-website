@@ -12,3 +12,6 @@ export * from './seo';
 
 // 导出价格配置数据源
 export * from './pricing';
+
+// 导出内容数据源
+export * from './content';

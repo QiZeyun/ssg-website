@@ -46,3 +46,18 @@ export function getLocaleConfig(locale: string): LocaleConfig {
 export function isSupportedLocale(locale: string): locale is SupportedLocale {
   return supportedLocales.includes(locale as SupportedLocale);
 }
+
+/**
+ * 获取用于日期格式化的 locale 标识符（BCP 47 格式）
+ * 
+ * @param locale 语言代码
+ * @returns BCP 47 locale 标识符（例如：'zh-CN', 'en-US'）
+ */
+export function getDateLocale(locale: string): string {
+  const localeMap: Record<SupportedLocale, string> = {
+    zh: 'zh-CN',
+    en: 'en-US',
+  };
+  const normalizedLocale = locale.toLowerCase().split('-')[0] as SupportedLocale;
+  return localeMap[normalizedLocale] || localeMap[defaultLocale];
+}

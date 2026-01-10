@@ -6,6 +6,7 @@
 import type { Metadata } from 'next';
 import { getGlobalConfig, getPageConfig } from './configs/seo';
 import type { PageSeoConfig, GlobalSeoConfig } from './configs/seo/types';
+import { supportedLocales } from '@/i18n/config';
 
 /**
  * 生成页面 Metadata（从数据源获取配置）
@@ -22,7 +23,9 @@ export async function generateMetadataFromPath(
   
   // 从多语言路径中提取基础路径（移除语言前缀）
   // 例如：'/zh/about' -> '/about'，'/en/pricing' -> '/pricing'
-  const basePath = path.replace(/^\/(zh|en)/, '') || '/';
+  // 动态生成正则表达式，匹配所有支持的语言
+  const localePattern = supportedLocales.join('|');
+  const basePath = path.replace(new RegExp(`^/(${localePattern})`), '') || '/';
   const pageConfig = await getPageConfig(basePath);
 
   // 合并全局配置和页面配置

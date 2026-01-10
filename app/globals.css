@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 代码高亮样式（highlight.js） */
+@import 'highlight.js/styles/github.css';
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -30,4 +33,91 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Markdown 内容样式 */
+.prose {
+  @apply text-gray-800;
+}
+
+.prose h1 {
+  @apply text-4xl font-bold text-gray-900 mt-8 mb-4;
+}
+
+.prose h2 {
+  @apply text-3xl font-semibold text-gray-900 mt-8 mb-4;
+}
+
+.prose h3 {
+  @apply text-2xl font-semibold text-gray-900 mt-6 mb-3;
+}
+
+.prose h4 {
+  @apply text-xl font-semibold text-gray-900 mt-4 mb-2;
+}
+
+.prose p {
+  @apply mb-4 text-gray-700 leading-relaxed;
+}
+
+.prose ul,
+.prose ol {
+  @apply mb-4 pl-6;
+}
+
+.prose ul {
+  @apply list-disc;
+}
+
+.prose ol {
+  @apply list-decimal;
+}
+
+.prose li {
+  @apply mb-2 text-gray-700;
+}
+
+.prose a {
+  @apply text-primary-600 hover:text-primary-700 underline;
+}
+
+.prose code {
+  @apply bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm font-mono;
+}
+
+.prose pre {
+  @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4;
+}
+
+.prose pre code {
+  @apply bg-transparent text-gray-100 p-0;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-gray-300 pl-4 italic text-gray-600 my-4;
+}
+
+.prose table {
+  @apply w-full border-collapse mb-4;
+}
+
+.prose th {
+  @apply border border-gray-300 px-4 py-2 bg-gray-100 font-semibold text-left;
+}
+
+.prose td {
+  @apply border border-gray-300 px-4 py-2;
+}
+
+.prose img {
+  @apply max-w-full h-auto rounded-lg my-4;
+}
+
+.prose hr {
+  @apply border-t border-gray-300 my-8;
+}
+
+/* 代码高亮样式（highlight.js） */
+.prose pre code.hljs {
+  @apply p-0 bg-transparent;
 }

@@ -15,6 +15,8 @@ export const zh = {
     getStarted: '立即开始',
     contactUs: '联系我们',
     language: '语言',
+    author: '作者',
+    lastUpdated: '最后更新',
   },
   home: {
     title: '欢迎来到您的公司',
@@ -31,10 +33,6 @@ export const zh = {
       title: '功能 3',
       description: '您的第三个功能或服务的描述。',
     },
-  },
-  about: {
-    title: '关于我们',
-    subtitle: '了解更多关于我们公司的信息、我们的使命和价值观。',
   },
   contact: {
     title: '联系我们',
