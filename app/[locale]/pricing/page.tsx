@@ -16,16 +16,13 @@ interface PricingPageProps {
 export async function generateMetadata({ params }: PricingPageProps): Promise<Metadata> {
   const { locale } = await params;
   const basePath = `/${locale}/pricing`;
-  
-  // 尝试获取定价页面的 SEO 配置，如果没有则使用默认配置
-  try {
-    return generateMetadataFromPath(basePath);
-  } catch {
-    return {
-      title: t(locale, 'pricing.title'),
-      description: t(locale, 'pricing.subtitle'),
-    };
-  }
+
+  // 没有配置时 generateMetadataFromPath 会自动回退到全局默认配置
+  // 这里不做 try/catch，保持 fail fast
+  return generateMetadataFromPath(basePath, {
+    title: t(locale, 'pricing.title'),
+    description: t(locale, 'pricing.subtitle'),
+  });
 }
 
 export default async function PricingPage({ params }: PricingPageProps) {
@@ -35,26 +32,7 @@ export default async function PricingPage({ params }: PricingPageProps) {
     notFound();
   }
 
-  let config: Awaited<ReturnType<typeof getPricingConfig>> | null = null;
-
-  try {
-    config = await getPricingConfig(locale);
-  } catch (error) {
-    console.error('Failed to load pricing config:', error);
-  }
-
-  if (!config) {
-    return (
-      <main className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t(locale, 'pricing.loadError.title')}
-          </h1>
-          <p className="text-gray-600">{t(locale, 'pricing.loadError.description')}</p>
-        </div>
-      </main>
-    );
-  }
+  const config = await getPricingConfig(locale);
 
   return (
     <main className="min-h-screen bg-gray-50">

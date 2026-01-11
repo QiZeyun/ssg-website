@@ -57,7 +57,11 @@ export async function generateMetadata({ params }: UniversalPageProps): Promise<
     return {};
   }
 
-  const content = await getContentBySlug(slugPath, locale);
+  const contentResult = await getContentBySlug(slugPath, locale);
+  if (!contentResult.ok) {
+    throw contentResult.error;
+  }
+  const content = contentResult.value;
 
   if (!content) {
     return {};
@@ -83,24 +87,23 @@ export async function generateStaticParams() {
 
   // 为每个支持的语言生成路由
   for (const locale of supportedLocales) {
-    try {
-      const slugs = await getAllSlugs(locale);
+    const slugsResult = await getAllSlugs(locale);
+    if (!slugsResult.ok) {
+      throw slugsResult.error;
+    }
 
-      for (const slug of slugs) {
-        // 跳过保留路由
-        if (isReservedRoute(slug)) {
-          continue;
-        }
-
-        // 将 slug 转换为数组（支持嵌套路径）
-        const slugArray = slug.split('/').filter(Boolean);
-        params.push({
-          locale,
-          slug: slugArray,
-        });
+    for (const slug of slugsResult.value) {
+      // 跳过保留路由
+      if (isReservedRoute(slug)) {
+        continue;
       }
-    } catch (error) {
-      console.error(`Failed to generate static params for locale: ${locale}`, error);
+
+      // 将 slug 转换为数组（支持嵌套路径）
+      const slugArray = slug.split('/').filter(Boolean);
+      params.push({
+        locale,
+        slug: slugArray,
+      });
     }
   }
 
@@ -122,7 +125,11 @@ export default async function UniversalPage({ params }: UniversalPageProps) {
   }
 
   // 从 markdown 获取内容
-  const content = await getContentBySlug(slugPath, locale);
+  const contentResult = await getContentBySlug(slugPath, locale);
+  if (!contentResult.ok) {
+    throw contentResult.error;
+  }
+  const content = contentResult.value;
 
   if (!content) {
     notFound();
