@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 import { getGlobalConfig, getRobotsConfig } from '@/dataService';
 
+export const dynamic = 'force-static';
+
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const globalConfig = await getGlobalConfig();
   const robotsConfig = await getRobotsConfig();

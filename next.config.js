@@ -8,7 +8,6 @@ const nextConfig = {
   },
   trailingSlash: true, // 确保 URL 以斜杠结尾（SEO 友好）
   reactStrictMode: true,
-  swcMinify: true,
   webpack: (config) => {
     // 支持导入 .md 文件作为原始字符串
     config.module.rules.push({

@@ -3,6 +3,8 @@ import { getGlobalConfig, getSitemapConfig, getAllContents } from '@/dataService
 import { supportedLocales } from '@/i18n/config';
 import type { SupportedLocale } from '@/i18n/types';
 
+export const dynamic = 'force-static';
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const globalConfig = await getGlobalConfig();
   const sitemapConfig = await getSitemapConfig();
