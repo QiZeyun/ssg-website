@@ -49,10 +49,10 @@ export default async function PricingPage({ params }: PricingPageProps) {
       <main className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            价格配置加载失败
+            {t(locale, 'pricing.loadError.title')}
           </h1>
           <p className="text-gray-600">
-            请检查配置文件或稍后重试。
+            {t(locale, 'pricing.loadError.description')}
           </p>
         </div>
       </main>

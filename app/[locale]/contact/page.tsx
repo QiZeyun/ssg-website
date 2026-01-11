@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { generateMetadataFromPath } from '@/dataService';
-import { t, isSupportedLocale } from '@/i18n';
+import { t, isSupportedLocale, type SupportedLocale } from '@/i18n';
 import { ContactForm } from '@/components/ContactForm';
+import { Footer } from '@/components/Footer';
 
 interface ContactPageProps {
   params: Promise<{ locale: string }>;
@@ -44,26 +45,20 @@ export default async function ContactPage({ params }: ContactPageProps) {
             </h2>
             <div className="space-y-2 text-gray-700">
               <p>
-                <strong>{t(locale, 'contact.email')}:</strong> contact@example.com
+                <strong>{t(locale, 'contact.email')}:</strong> {t(locale, 'contact.emailAddress')}
               </p>
               <p>
-                <strong>{t(locale, 'contact.phone')}:</strong> +1 (555) 123-4567
+                <strong>{t(locale, 'contact.phone')}:</strong> {t(locale, 'contact.phoneNumber')}
               </p>
               <p>
-                <strong>{t(locale, 'contact.address')}:</strong> 123 Business St, City, State 12345
+                <strong>{t(locale, 'contact.address')}:</strong> {t(locale, 'contact.addressDetail')}
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <footer className="bg-gray-800 text-white mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <p>&copy; {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer locale={locale as SupportedLocale} />
     </main>
   );
 }

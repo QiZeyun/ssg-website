@@ -38,7 +38,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
 
       for (const content of contents) {
-        const contentPath = `/${locale}/content/${content.slug}`;
+        // 生成正确的 URL 路径（与实际路由一致：/zh/about 而非 /zh/content/about）
+        const contentPath = `/${locale}/${content.slug}`;
         const url = `${baseUrl}${contentPath}`;
         const lastModified = content.frontmatter.lastModified || content.frontmatter.date
           ? new Date(content.frontmatter.lastModified || content.frontmatter.date || Date.now())

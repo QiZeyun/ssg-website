@@ -44,54 +44,102 @@
   "pages": [
     {
       "path": "/",
-      "title": "Home",
-      "description": "Welcome to our website. Discover our products and services.",
+      "title": {
+        "zh": "首页",
+        "en": "Home"
+      },
+      "description": {
+        "zh": "欢迎访问我们的网站。探索我们的产品和服务。",
+        "en": "Welcome to our website. Discover our products and services."
+      },
       "keywords": ["home", "welcome", "products", "services"],
       "ogImage": "/og-home.jpg",
       "noIndex": false,
       "canonical": "/",
       "openGraph": {
-        "title": "Home | Your Company Name",
-        "description": "Welcome to our website. Discover our products and services."
+        "title": {
+          "zh": "首页 | 您的公司名称",
+          "en": "Home | Your Company Name"
+        },
+        "description": {
+          "zh": "欢迎访问我们的网站。探索我们的产品和服务。",
+          "en": "Welcome to our website. Discover our products and services."
+        }
       }
     },
     {
       "path": "/about",
-      "title": "About Us",
-      "description": "Learn more about our company, mission, and values.",
+      "title": {
+        "zh": "关于我们",
+        "en": "About Us"
+      },
+      "description": {
+        "zh": "了解更多关于我们公司、使命和价值观的信息。",
+        "en": "Learn more about our company, mission, and values."
+      },
       "keywords": ["about", "company", "mission", "values"],
       "ogImage": "/og-about.jpg",
       "noIndex": false,
       "canonical": "/about",
       "openGraph": {
-        "title": "About Us | Your Company Name",
-        "description": "Learn more about our company, mission, and values."
+        "title": {
+          "zh": "关于我们 | 您的公司名称",
+          "en": "About Us | Your Company Name"
+        },
+        "description": {
+          "zh": "了解更多关于我们公司、使命和价值观的信息。",
+          "en": "Learn more about our company, mission, and values."
+        }
       }
     },
     {
       "path": "/contact",
-      "title": "Contact Us",
-      "description": "Get in touch with us. We would love to hear from you.",
+      "title": {
+        "zh": "联系我们",
+        "en": "Contact Us"
+      },
+      "description": {
+        "zh": "联系我们，我们很乐意听取您的意见。",
+        "en": "Get in touch with us. We would love to hear from you."
+      },
       "keywords": ["contact", "get in touch", "email", "phone"],
       "ogImage": "/og-contact.jpg",
       "noIndex": false,
       "canonical": "/contact",
       "openGraph": {
-        "title": "Contact Us | Your Company Name",
-        "description": "Get in touch with us. We would love to hear from you."
+        "title": {
+          "zh": "联系我们 | 您的公司名称",
+          "en": "Contact Us | Your Company Name"
+        },
+        "description": {
+          "zh": "联系我们，我们很乐意听取您的意见。",
+          "en": "Get in touch with us. We would love to hear from you."
+        }
       }
     },
     {
       "path": "/pricing",
-      "title": "Pricing",
-      "description": "Choose the plan that fits your needs. Transparent pricing with no hidden fees.",
+      "title": {
+        "zh": "价格",
+        "en": "Pricing"
+      },
+      "description": {
+        "zh": "选择适合您需求的套餐。透明定价，无隐藏费用。",
+        "en": "Choose the plan that fits your needs. Transparent pricing with no hidden fees."
+      },
       "keywords": ["pricing", "plans", "pricing plans", "subscription"],
       "ogImage": "/og-pricing.jpg",
       "noIndex": false,
       "canonical": "/pricing",
       "openGraph": {
-        "title": "Pricing | Your Company Name",
-        "description": "Choose the plan that fits your needs. Transparent pricing with no hidden fees."
+        "title": {
+          "zh": "价格 | 您的公司名称",
+          "en": "Pricing | Your Company Name"
+        },
+        "description": {
+          "zh": "选择适合您需求的套餐。透明定价，无隐藏费用。",
+          "en": "Choose the plan that fits your needs. Transparent pricing with no hidden fees."
+        }
       }
     }
   ],

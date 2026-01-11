@@ -20,6 +20,16 @@ export const en: TranslationDictionary = {
     language: 'Language',
     author: 'Author',
     lastUpdated: 'Last Updated',
+    companyName: 'Your Company Name',
+    allRightsReserved: 'All rights reserved',
+  },
+  footer: {
+    company: 'Company',
+    legal: 'Legal',
+    privacyPolicy: 'Privacy Policy',
+    termsOfService: 'Terms of Service',
+    followUs: 'Follow Us',
+    socialMediaLinks: 'Social media links',
   },
   home: {
     title: 'Welcome to Your Company',
@@ -53,6 +63,9 @@ export const en: TranslationDictionary = {
     email: 'Email',
     phone: 'Phone',
     address: 'Address',
+    emailAddress: 'contact@example.com',
+    phoneNumber: '+1 (555) 123-4567',
+    addressDetail: '123 Business St, City, State 12345',
   },
   pricing: {
     title: 'Pricing',
@@ -68,6 +81,10 @@ export const en: TranslationDictionary = {
     getStarted: 'Get Started',
     faq: {
       title: 'Frequently Asked Questions',
+    },
+    loadError: {
+      title: 'Failed to load pricing',
+      description: 'Please check the configuration or try again later.',
     },
   },
 };
