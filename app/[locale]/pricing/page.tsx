@@ -35,27 +35,30 @@ export default async function PricingPage({ params }: PricingPageProps) {
     notFound();
   }
 
-  try {
-    const config = await getPricingConfig(locale);
+  let config: Awaited<ReturnType<typeof getPricingConfig>> | null = null;
 
-    return (
-      <main className="min-h-screen bg-gray-50">
-        <PricingTable config={config} locale={locale} />
-      </main>
-    );
+  try {
+    config = await getPricingConfig(locale);
   } catch (error) {
     console.error('Failed to load pricing config:', error);
+  }
+
+  if (!config) {
     return (
       <main className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             {t(locale, 'pricing.loadError.title')}
           </h1>
-          <p className="text-gray-600">
-            {t(locale, 'pricing.loadError.description')}
-          </p>
+          <p className="text-gray-600">{t(locale, 'pricing.loadError.description')}</p>
         </div>
       </main>
     );
   }
+
+  return (
+    <main className="min-h-screen bg-gray-50">
+      <PricingTable config={config} locale={locale} />
+    </main>
+  );
 }
