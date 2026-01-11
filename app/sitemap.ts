@@ -34,28 +34,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 添加 Markdown 内容页面
   for (const locale of supportedLocales) {
-    try {
-      const contents = await getAllContents({
-        locale: locale as SupportedLocale,
+    const contentsResult = await getAllContents({
+      locale: locale as SupportedLocale,
+    });
+
+    if (!contentsResult.ok) {
+      throw contentsResult.error;
+    }
+
+    for (const content of contentsResult.value) {
+      // 生成正确的 URL 路径（与实际路由一致：/zh/about 而非 /zh/content/about）
+      const contentPath = `/${locale}/${content.slug}`;
+      const url = `${baseUrl}${contentPath}`;
+      const lastModified = content.frontmatter.lastModified || content.frontmatter.date
+        ? new Date(content.frontmatter.lastModified || content.frontmatter.date || Date.now())
+        : new Date();
+
+      sitemapEntries.push({
+        url,
+        lastModified,
+        changeFrequency: 'weekly',
+        priority: 0.7,
       });
-
-      for (const content of contents) {
-        // 生成正确的 URL 路径（与实际路由一致：/zh/about 而非 /zh/content/about）
-        const contentPath = `/${locale}/${content.slug}`;
-        const url = `${baseUrl}${contentPath}`;
-        const lastModified = content.frontmatter.lastModified || content.frontmatter.date
-          ? new Date(content.frontmatter.lastModified || content.frontmatter.date || Date.now())
-          : new Date();
-
-        sitemapEntries.push({
-          url,
-          lastModified,
-          changeFrequency: 'weekly',
-          priority: 0.7,
-        });
-      }
-    } catch (error) {
-      console.error(`Failed to generate sitemap entries for locale: ${locale}`, error);
     }
   }
 

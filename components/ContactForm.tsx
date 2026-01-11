@@ -1,11 +1,40 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { err, ok, type Result } from '@/dataService/result';
+import { AppError } from '@/dataService/errors';
 import { useTranslation } from '@/i18n';
 import type { SupportedLocale } from '@/i18n';
 
 interface ContactFormProps {
   locale: SupportedLocale;
+}
+
+type ContactFormData = {
+  name: string;
+  email: string;
+  message: string;
+};
+
+async function submitContactForm(data: ContactFormData): Promise<Result<void, AppError>> {
+  try {
+    // 这里可以调用 API 提交表单
+    // const response = await fetch('/api/contact', { ... });
+
+    // 模拟 API 调用
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    void data;
+
+    return ok(undefined);
+  } catch (cause) {
+    return err(
+      new AppError({
+        code: 'CONTACT_FORM_SUBMIT_FAILED',
+        message: 'Failed to submit contact form',
+        cause,
+      })
+    );
+  }
 }
 
 export function ContactForm({ locale }: ContactFormProps) {
@@ -23,23 +52,18 @@ export function ContactForm({ locale }: ContactFormProps) {
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
-    try {
-      // 这里可以调用 API 提交表单
-      // const response = await fetch('/api/contact', { ... });
-      
-      // 模拟 API 调用
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    const result = await submitContactForm(formData);
 
+    if (result.ok) {
       setSubmitStatus('success');
-      
-      // 重置表单
       setFormData({ name: '', email: '', message: '' });
-    } catch (error) {
-      setSubmitStatus('error');
-      console.error('Form submission error:', error);
-    } finally {
       setIsSubmitting(false);
+      return;
     }
+
+    setSubmitStatus('error');
+    console.error(result.error);
+    setIsSubmitting(false);
   };
 
   const handleChange = (

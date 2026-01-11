@@ -11,8 +11,10 @@ import type { SupportedLocale } from '@/i18n/types';
 import type { MarkdownContent, ContentListItem, ContentQueryOptions } from './types';
 import { parseMarkdown, extractSlugFromPath } from './parser';
 import { defaultLocale, supportedLocales } from '@/i18n/config';
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, relative, extname } from 'path';
+import { err, ok, type Result } from '@/dataService/result';
+import { AppError } from '@/dataService/errors';
 
 /**
  * 内容文件映射表
@@ -32,21 +34,6 @@ const CONTENT_DIR = join(process.cwd(), 'dataService', 'data', 'content');
  * @param slug slug（文件名，不含扩展名）
  * @returns 文件内容，如果文件不存在则返回 null
  */
-function readContentFile(locale: SupportedLocale, slug: string): string | null {
-  const filePath = join(CONTENT_DIR, locale, `${slug}.md`);
-  
-  if (!existsSync(filePath)) {
-    return null;
-  }
-
-  try {
-    return readFileSync(filePath, 'utf-8');
-  } catch (error) {
-    console.error(`Failed to read content file: ${filePath}`, error);
-    return null;
-  }
-}
-
 /**
  * 递归扫描目录，查找所有 .md 文件
  * 
@@ -54,43 +41,54 @@ function readContentFile(locale: SupportedLocale, slug: string): string | null {
  * @param localeDir 语言目录的绝对路径（用于计算相对路径）
  * @returns slug 列表（相对于 content/[locale] 目录的路径，不含扩展名）
  */
-function scanMarkdownFiles(dir: string, localeDir: string): string[] {
+function scanMarkdownFiles(dir: string, localeDir: string): Result<string[], AppError> {
   const slugs: string[] = [];
   
   if (!existsSync(dir)) {
-    return slugs;
+    return ok(slugs);
   }
 
+  let entries: Array<{ name: string; isDirectory: () => boolean; isFile: () => boolean }>;
   try {
-    const entries = readdirSync(dir, { withFileTypes: true });
-
-    for (const entry of entries) {
-      const fullPath = join(dir, entry.name);
-
-      if (entry.isDirectory()) {
-        // 递归扫描子目录
-        const subSlugs = scanMarkdownFiles(fullPath, localeDir);
-        slugs.push(...subSlugs);
-      } else if (entry.isFile() && extname(entry.name) === '.md') {
-        // 找到 .md 文件，计算相对于 localeDir 的路径作为 slug
-        const relativePath = relative(localeDir, fullPath);
-        // 移除扩展名，并将路径分隔符统一为 /
-        const slug = relativePath.replace(/\.md$/, '').replace(/\\/g, '/');
-        slugs.push(slug);
-      }
-    }
-  } catch (error) {
-    console.error(`Failed to scan directory: ${dir}`, error);
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch (cause) {
+    return err(
+      new AppError({
+        code: 'CONTENT_DIR_SCAN_FAILED',
+        message: 'Failed to scan content directory',
+        context: { dir },
+        cause,
+      })
+    );
   }
 
-  return slugs;
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      const subResult = scanMarkdownFiles(fullPath, localeDir);
+      if (!subResult.ok) {
+        return subResult;
+      }
+      slugs.push(...subResult.value);
+      continue;
+    }
+
+    if (entry.isFile() && extname(entry.name) === '.md') {
+      const relativePath = relative(localeDir, fullPath);
+      const slug = relativePath.replace(/\.md$/, '').replace(/\\/g, '/');
+      slugs.push(slug);
+    }
+  }
+
+  return ok(slugs);
 }
 
 /**
  * 初始化内容文件映射
  * 在构建时自动扫描并读取所有 markdown 文件
  */
-function initContentFiles(): ContentFilesMap {
+function initContentFiles(): Result<ContentFilesMap, AppError> {
   // 初始化文件映射对象，为每个支持的语言创建空对象
   const files = {} as ContentFilesMap;
   for (const locale of supportedLocales) {
@@ -102,14 +100,23 @@ function initContentFiles(): ContentFilesMap {
     const localeDir = join(CONTENT_DIR, locale);
     
     if (!existsSync(localeDir)) {
-      continue;
+      return err(
+        new AppError({
+          code: 'CONTENT_LOCALE_DIR_MISSING',
+          message: 'Content locale directory is missing',
+          context: { locale, localeDir },
+        })
+      );
     }
 
     // 扫描该语言目录下的所有 .md 文件
-    const slugs = scanMarkdownFiles(localeDir, localeDir);
+    const slugsResult = scanMarkdownFiles(localeDir, localeDir);
+    if (!slugsResult.ok) {
+      return slugsResult;
+    }
 
     // 读取每个文件的内容
-    for (const slug of slugs) {
+    for (const slug of slugsResult.value) {
       // 根据 slug 构建文件路径
       // slug 可能包含子目录，例如 'blog/post-1' -> 'blog/post-1.md'
       const filePath = join(localeDir, `${slug}.md`);
@@ -117,29 +124,34 @@ function initContentFiles(): ContentFilesMap {
       if (existsSync(filePath)) {
         try {
           const rawContent = readFileSync(filePath, 'utf-8');
-          if (rawContent) {
-            files[locale][slug] = {
-              rawContent,
-              filePath: `${locale}/${slug}.md`,
-            };
-          }
-        } catch (error) {
-          console.error(`Failed to read content file: ${filePath}`, error);
+          files[locale][slug] = {
+            rawContent,
+            filePath: `${locale}/${slug}.md`,
+          };
+        } catch (cause) {
+          return err(
+            new AppError({
+              code: 'CONTENT_FILE_READ_FAILED',
+              message: 'Failed to read content file',
+              context: { locale, filePath },
+              cause,
+            })
+          );
         }
       }
     }
   }
 
-  return files;
+  return ok(files);
 }
 
 // 缓存内容文件映射（在模块加载时初始化）
-let contentFilesCache: ContentFilesMap | null = null;
+let contentFilesCache: Result<ContentFilesMap, AppError> | null = null;
 
 /**
  * 获取内容文件映射（懒加载）
  */
-function getContentFiles(): ContentFilesMap {
+function getContentFiles(): Result<ContentFilesMap, AppError> {
   if (!contentFilesCache) {
     contentFilesCache = initContentFiles();
   }
@@ -156,35 +168,54 @@ function getContentFiles(): ContentFilesMap {
 export async function getContentBySlug(
   slug: string,
   locale: SupportedLocale
-): Promise<MarkdownContent | null> {
+): Promise<Result<MarkdownContent | null, AppError>> {
   // 规范化 slug（移除前后斜杠）
   const normalizedSlug = slug.replace(/^\/+|\/+$/g, '') || 'index';
 
   // 获取内容文件映射
-  const contentFiles = getContentFiles();
+  const contentFilesResult = getContentFiles();
+  if (!contentFilesResult.ok) {
+    return contentFilesResult;
+  }
+  const contentFiles = contentFilesResult.value;
 
   // 获取指定语言的内容文件
   const localeFiles = contentFiles[locale] || contentFiles[defaultLocale];
   const fileData = localeFiles[normalizedSlug];
 
   if (!fileData) {
-    return null;
+    return ok(null);
   }
 
   // 解析 Markdown
-  const { frontmatter, content } = parseMarkdown(fileData.rawContent);
+  let frontmatter: any;
+  let content: string;
+  try {
+    const parsed = parseMarkdown(fileData.rawContent);
+    frontmatter = parsed.frontmatter;
+    content = parsed.content;
+  } catch (cause) {
+    return err(
+      new AppError({
+        code: 'CONTENT_MARKDOWN_PARSE_FAILED',
+        message: 'Failed to parse markdown content',
+        context: { locale, slug: normalizedSlug, filePath: fileData.filePath },
+        cause,
+      })
+    );
+  }
 
   // 使用 frontmatter 中的 slug，如果没有则使用传入的 slug
   const finalSlug = frontmatter.slug || normalizedSlug;
 
-  return {
+  return ok({
     frontmatter,
     content,
     rawContent: fileData.rawContent,
     slug: finalSlug,
     locale,
     filePath: fileData.filePath,
-  };
+  });
 }
 
 /**
@@ -195,7 +226,7 @@ export async function getContentBySlug(
  */
 export async function getAllContents(
   options: ContentQueryOptions = {}
-): Promise<MarkdownContent[]> {
+): Promise<Result<MarkdownContent[], AppError>> {
   const {
     locale,
     tag,
@@ -212,7 +243,11 @@ export async function getAllContents(
     : [...supportedLocales];
 
   // 获取内容文件映射
-  const contentFiles = getContentFiles();
+  const contentFilesResult = getContentFiles();
+  if (!contentFilesResult.ok) {
+    return contentFilesResult;
+  }
+  const contentFiles = contentFilesResult.value;
 
   // 遍历所有语言
   for (const loc of localesToQuery) {
@@ -221,7 +256,22 @@ export async function getAllContents(
     // 遍历该语言的所有文件
     for (const [slug, fileData] of Object.entries(localeFiles)) {
       // 解析 Markdown
-      const { frontmatter, content } = parseMarkdown(fileData.rawContent);
+      let frontmatter: any;
+      let content: string;
+      try {
+        const parsed = parseMarkdown(fileData.rawContent);
+        frontmatter = parsed.frontmatter;
+        content = parsed.content;
+      } catch (cause) {
+        return err(
+          new AppError({
+            code: 'CONTENT_MARKDOWN_PARSE_FAILED',
+            message: 'Failed to parse markdown content',
+            context: { locale: loc, slug, filePath: fileData.filePath },
+            cause,
+          })
+        );
+      }
 
       // 过滤：标签
       if (tag && (!frontmatter.tags || !frontmatter.tags.includes(tag))) {
@@ -261,10 +311,10 @@ export async function getAllContents(
 
   // 限制数量
   if (limit && limit > 0) {
-    return results.slice(0, limit);
+    return ok(results.slice(0, limit));
   }
 
-  return results;
+  return ok(results);
 }
 
 /**
@@ -275,16 +325,20 @@ export async function getAllContents(
  */
 export async function getContentList(
   options: ContentQueryOptions = {}
-): Promise<ContentListItem[]> {
-  const contents = await getAllContents(options);
+): Promise<Result<ContentListItem[], AppError>> {
+  const contentsResult = await getAllContents(options);
+  if (!contentsResult.ok) {
+    return contentsResult;
+  }
+  const contents = contentsResult.value;
 
   // 只返回列表项（不包含 HTML 内容）
-  return contents.map(({ frontmatter, slug, locale, filePath }) => ({
+  return ok(contents.map(({ frontmatter, slug, locale, filePath }) => ({
     frontmatter,
     slug,
     locale,
     filePath,
-  }));
+  })));
 }
 
 /**
@@ -293,12 +347,16 @@ export async function getContentList(
  * @param locale 语言代码（可选）
  * @returns Promise<string[]> slug 列表
  */
-export async function getAllSlugs(locale?: SupportedLocale): Promise<string[]> {
-  const contents = await getAllContents({
+export async function getAllSlugs(locale?: SupportedLocale): Promise<Result<string[], AppError>> {
+  const contentsResult = await getAllContents({
     locale,
   });
 
-  return contents.map((content) => content.slug);
+  if (!contentsResult.ok) {
+    return contentsResult;
+  }
+
+  return ok(contentsResult.value.map((content) => content.slug));
 }
 
 /**
@@ -309,8 +367,8 @@ export async function getAllSlugs(locale?: SupportedLocale): Promise<string[]> {
  * @returns Promise<boolean> 是否存在
  */
 export async function hasSlug(slug: string, locale: SupportedLocale): Promise<boolean> {
-  const content = await getContentBySlug(slug, locale);
-  return content !== null;
+  const result = await getContentBySlug(slug, locale);
+  return result.ok && result.value !== null;
 }
 
 // 导出类型
