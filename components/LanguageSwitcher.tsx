@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useTranslation, type SupportedLocale, localeConfigs, supportedLocales } from '@/i18n';
+import { useTranslation, type SupportedLocale, localeConfigs, supportedLocales, removeLocalePrefix, addLocalePrefix } from '@/i18n';
 
 interface LanguageSwitcherProps {
   locale: SupportedLocale;
@@ -15,9 +15,7 @@ export function LanguageSwitcher({ locale, currentPath }: LanguageSwitcherProps)
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // 从当前路径中提取基础路径（去除语言前缀）
-  // 动态匹配支持的语言代码，支持未来添加更多语言
-  const localePattern = supportedLocales.join('|');
-  const basePath = currentPath.replace(new RegExp(`^/(${localePattern})`), '') || '/';
+  const basePath = removeLocalePrefix(currentPath);
 
   // 点击外部关闭下拉菜单
   useEffect(() => {
@@ -89,7 +87,7 @@ export function LanguageSwitcher({ locale, currentPath }: LanguageSwitcherProps)
         <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-50 max-h-64 overflow-auto">
           {supportedLocales.map((loc) => {
             const isActive = loc === locale;
-            const targetPath = `/${loc}${basePath === '/' ? '' : basePath}`;
+            const targetPath = addLocalePrefix(basePath, loc);
             const localeConfig = localeConfigs[loc];
 
             return (

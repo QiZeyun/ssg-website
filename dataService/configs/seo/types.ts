@@ -2,10 +2,57 @@
  * SEO 配置类型定义
  */
 
-import type { Metadata, MetadataRoute } from 'next';
+import type { SupportedLocale } from '@/i18n/types';
 
 /**
- * 页面级别的 SEO 配置
+ * 多语言文本类型
+ * 可以是简单字符串（向后兼容）或按语言区分的对象
+ */
+export type LocalizedText = string | Partial<Record<SupportedLocale, string>>;
+
+/**
+ * 页面级别的 SEO 配置（JSON 文件中的格式）
+ */
+export interface PageSeoConfigRaw {
+  /** 页面路径，例如 '/' 或 '/about' */
+  path: string;
+  /** 页面标题（支持多语言） */
+  title: LocalizedText;
+  /** 页面描述（支持多语言） */
+  description: LocalizedText;
+  /** 关键词列表 */
+  keywords?: string[];
+  /** OG 图片 URL */
+  ogImage?: string;
+  /** 是否不索引此页面 */
+  noIndex?: boolean;
+  /** 规范 URL */
+  canonical?: string;
+  /** 额外的 OpenGraph 配置 */
+  openGraph?: {
+    title?: LocalizedText;
+    description?: LocalizedText;
+    type?: string;
+    locale?: string;
+    images?: Array<{
+      url: string;
+      width?: number;
+      height?: number;
+      alt?: string;
+    }>;
+  };
+  /** Twitter Card 配置 */
+  twitter?: {
+    card?: string;
+    title?: LocalizedText;
+    description?: LocalizedText;
+    images?: string[];
+    creator?: string;
+  };
+}
+
+/**
+ * 页面级别的 SEO 配置（解析后的格式，所有文本字段已解析为特定语言）
  */
 export interface PageSeoConfig {
   /** 页面路径，例如 '/' 或 '/about' */
@@ -132,13 +179,13 @@ export interface RobotsConfig {
 }
 
 /**
- * 完整的 SEO 配置
+ * 完整的 SEO 配置（JSON 文件中的格式）
  */
-export interface SeoConfig {
+export interface SeoConfigRaw {
   /** 全局配置 */
   global: GlobalSeoConfig;
-  /** 页面配置 */
-  pages: PageSeoConfig[];
+  /** 页面配置（多语言格式） */
+  pages: PageSeoConfigRaw[];
   /** Sitemap 配置 */
   sitemap: {
     /** Sitemap 页面列表 */
@@ -147,3 +194,8 @@ export interface SeoConfig {
   /** Robots.txt 配置 */
   robots: RobotsConfig;
 }
+
+/**
+ * 完整的 SEO 配置（向后兼容的别名）
+ */
+export type SeoConfig = SeoConfigRaw;

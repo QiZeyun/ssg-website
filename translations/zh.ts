@@ -17,6 +17,16 @@ export const zh = {
     language: '语言',
     author: '作者',
     lastUpdated: '最后更新',
+    companyName: '您的公司名称',
+    allRightsReserved: '保留所有权利',
+  },
+  footer: {
+    company: '公司',
+    legal: '法律',
+    privacyPolicy: '隐私政策',
+    termsOfService: '服务条款',
+    followUs: '关注我们',
+    socialMediaLinks: '社交媒体链接',
   },
   home: {
     title: '欢迎来到您的公司',
@@ -50,6 +60,9 @@ export const zh = {
     email: '邮箱',
     phone: '电话',
     address: '地址',
+    emailAddress: 'contact@example.com',
+    phoneNumber: '+86 123-4567-8900',
+    addressDetail: '中国北京市朝阳区xxx路xxx号',
   },
   pricing: {
     title: '价格',
@@ -65,6 +78,10 @@ export const zh = {
     getStarted: '立即开始',
     faq: {
       title: '常见问题',
+    },
+    loadError: {
+      title: '价格配置加载失败',
+      description: '请检查配置文件或稍后重试。',
     },
   },
 } as const;

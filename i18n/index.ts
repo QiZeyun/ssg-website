@@ -13,6 +13,7 @@ export type { SupportedLocale, TranslationDictionary, Translations } from './typ
 export type { TranslationKey } from '@/translations';
 export { isSupportedLocale, defaultLocale, supportedLocales, localeConfigs, getLocaleConfig, getDateLocale } from './config';
 export { getTranslations } from './translations';
+export { removeLocalePrefix, addLocalePrefix, extractLocaleFromPath, hasLocalePrefix } from './utils';
 
 /**
  * 翻译函数

@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { generateMetadataFromPath } from '@/dataService';
-import { t, isSupportedLocale } from '@/i18n';
+import { t, isSupportedLocale, type SupportedLocale } from '@/i18n';
+import { Footer } from '@/components/Footer';
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
@@ -67,51 +68,7 @@ export default async function HomePage({ params }: HomePageProps) {
         </div>
       </section>
 
-      <footer className="bg-gray-800 text-white mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Company</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href={`/${locale}/about`} className="hover:text-primary-400">
-                    {t(locale, 'nav.about')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href={`/${locale}/contact`} className="hover:text-primary-400">
-                    {t(locale, 'nav.contact')}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href={`/${locale}/privacy`} className="hover:text-primary-400">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href={`/${locale}/terms`} className="hover:text-primary-400">
-                    Terms of Service
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
-              <div className="space-y-2">
-                <p>Social media links here</p>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-            <p>&copy; {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer locale={locale as SupportedLocale} />
     </main>
   );
 }
