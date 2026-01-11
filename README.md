@@ -1,25 +1,26 @@
 # SSG Website
 
-一个基于 Next.js 14 的静态站点生成（SSG）项目，具有灵活的 SEO 配置系统和自动化部署流程。
+一个基于 Next.js 16 的静态站点生成（SSG）项目，具有灵活的 SEO 配置系统和自动化部署流程。
 
-[![Next.js](https://img.shields.io/badge/Next.js-14.2-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8)](https://tailwindcss.com/)
 [![pnpm](https://img.shields.io/badge/pnpm-9.0-orange)](https://pnpm.io/)
 
 ## ✨ 特性
 
-- 🚀 **静态站点生成（SSG）**：基于 Next.js 14 的静态导出，生成纯静态 HTML
+- 🚀 **静态站点生成（SSG）**：基于 Next.js 16 的静态导出，生成纯静态 HTML
 - 🔧 **灵活的 SEO 配置系统**：抽象的数据源接口，支持从本地文件、CMS、API 等多种数据源获取 SEO 配置
 - 📊 **完整的 SEO 支持**：自动生成 sitemap.xml、robots.txt、结构化数据（JSON-LD）
 - 🎨 **现代化 UI**：使用 Tailwind CSS 构建响应式界面
 - 🔄 **自动化部署**：GitHub Actions 自动构建并部署到 Vercel
 - ✅ **类型安全**：完整的 TypeScript 类型定义
-- 🧪 **本地验证工具**：自动验证构建产物，确保部署前质量
+- 🧪 **单元测试**：基于 Jest 和 React Testing Library 的测试框架
+- 🔍 **本地验证工具**：自动验证构建产物，确保部署前质量
 
 ## 🛠️ 技术栈
 
-- **框架**: Next.js 14.2
+- **框架**: Next.js 16
 - **语言**: TypeScript 5.3
 - **样式**: Tailwind CSS 3.4
 - **包管理器**: pnpm 9.0
@@ -388,6 +389,9 @@ vercel --prod
 | `pnpm build` | 构建生产版本 |
 | `pnpm start` | 启动生产服务器（需要先构建） |
 | `pnpm lint` | 运行 ESLint 代码检查 |
+| `pnpm test` | 运行单元测试 |
+| `pnpm test:watch` | 以监听模式运行测试 |
+| `pnpm test:ci` | 在 CI 环境运行测试 |
 | `pnpm type-check` | 运行 TypeScript 类型检查 |
 | `pnpm validate` | 验证构建产物 |
 | `pnpm preview` | 预览构建产物 |
@@ -433,6 +437,7 @@ vercel --prod
 ## 📚 相关文档
 
 - [工程亮点与知识点总结](PROJECT_HIGHLIGHTS.md) - **📖 推荐阅读**：工程亮点、SSG/官网知识点、技术要点和扩展学习
+- [测试指南](TESTING.md) - 单元测试框架和测试规范说明
 - [部署指南](DEPLOY.md) - 详细的部署说明和故障排查
 - [验证指南](VALIDATE.md) - 本地验证构建产物的完整指南
 - [SEO 配置说明](dataService/data/README.md) - SEO 配置系统的详细文档

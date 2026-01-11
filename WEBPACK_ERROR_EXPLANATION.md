@@ -2,7 +2,7 @@
 
 ## 问题概述
 
-在 Next.js 14 开发模式下，当配置了 `output: 'export'` 时，可能会出现以下错误：
+在 Next.js 开发模式下，当配置了 `output: 'export'` 时，可能会出现以下错误：
 
 ```
 __webpack_require__.n is not a function
@@ -51,7 +51,7 @@ module.exports = MyComponent;
 const MyComponent = __webpack_require__.n(__webpack_require__(/* ... */));
 ```
 
-### 3. Next.js 14 `output: 'export'` 的影响
+### 3. Next.js `output: 'export'` 的影响
 
 当 Next.js 配置了 `output: 'export'` 时：
 
@@ -183,7 +183,7 @@ const nextConfig = {
 
 ## 技术细节
 
-### Next.js 14 的构建流程
+### Next.js 的构建流程
 
 ```
 开发模式 (next dev)
@@ -221,7 +221,7 @@ __webpack_require__(moduleId)
 
 ### 错误发生的条件
 
-1. ✅ Next.js 14.x
+1. ✅ Next.js 16.x
 2. ✅ 配置了 `output: 'export'`
 3. ✅ 开发模式下运行 `next dev`
 4. ✅ 使用了客户端组件（`'use client'`）
@@ -311,7 +311,7 @@ Next.js 打包层（封装）
 └── Turbopack（实验性，开发模式可选）
 ```
 
-#### 3. Next.js 14 的打包工具选择
+#### 3. Next.js 16 的打包工具选择
 
 **默认行为**：
 - **开发模式** (`next dev`)：使用 Webpack（或可选择 Turbopack）

@@ -92,7 +92,7 @@ const text = locale === 'zh' ? '/月' : '/month';
 - **结构化数据（JSON-LD）**：`StructuredData` 组件支持多种 Schema.org 类型
 - **Open Graph 标签**：社交媒体分享优化（微信、微博、Facebook 等）
 - **Twitter Card**：Twitter 分享优化
-- **Metadata API**：Next.js 14 的 Metadata API，自动生成所有 SEO 标签
+- **Metadata API**：Next.js 的 Metadata API，自动生成所有 SEO 标签
 
 #### ✅ 自动化 CI/CD
 - **GitHub Actions**：自动构建和部署
@@ -151,7 +151,7 @@ const text = locale === 'zh' ? '/月' : '/month';
 
 **核心概念**：
 - **Next.js**：基于 React 的全栈框架
-- **App Router**：Next.js 14 的新路由系统（本项目使用）
+- **App Router**：Next.js 的新路由系统（本项目使用）
 - **Server Components vs Client Components**：服务器组件和客户端组件的区别
 - **Metadata API**：用于生成 SEO 元数据的 API
 
@@ -1947,7 +1947,7 @@ out/
 
 ## ⚙️ Next.js 技术要点
 
-### Next.js 14 的核心概念
+### Next.js 16 的核心概念
 
 #### 1. App Router vs Pages Router
 
